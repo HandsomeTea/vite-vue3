@@ -11,7 +11,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { redirectTo, getMenuStatus } from '../../views/lib';
+import { redirectTo, getMenuStatus } from '@/views/lib';
 export default defineComponent({
     setup() {
         return {

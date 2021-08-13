@@ -5,8 +5,8 @@ import { INotificationOptions } from 'element-plus/lib/el-notification/src/notif
 import { ILoadingInstance, ILoadingOptions } from 'element-plus/lib/el-loading/src/loading.type';
 import { ElMessageBoxOptions, MessageBoxData } from 'element-plus/lib/el-message-box/src/message-box.type';
 
-import i18n from '../lang';
-import store from '../store';
+import i18n from '@/lang';
+import store from '@/store';
 import { ComponentInstance } from 'vant/lib/utils';
 
 interface CloseNotificationFn {

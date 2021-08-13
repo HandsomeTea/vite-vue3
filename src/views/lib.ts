@@ -1,5 +1,5 @@
-import router from '../router';
-import { RootState, UserState } from '../store/stateModel';
+import router from '@/router';
+import { RootState, UserState } from '@/store/stateModel';
 import { computed, ComputedRef } from 'vue';
 import { LocationQueryRaw } from 'vue-router';
 import { Store, useStore } from 'vuex';

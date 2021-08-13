@@ -12,13 +12,13 @@
 </template>
 
 <script lang="ts">
-import Api from '../api';
-import { Tips } from '../ui-frame';
+import Api from '@/api';
+import { Tips } from '@/ui-frame';
 
 import { defineComponent, ref } from 'vue';
-import { getLoginUserInfo, getLang } from '../views/lib';
+import { getLoginUserInfo, getLang } from '@/views/lib';
 import { useStore, Store } from 'vuex';
-import { RootState } from '../store/stateModel';
+import { RootState } from '@/store/stateModel';
 
 export default defineComponent({
     setup() {

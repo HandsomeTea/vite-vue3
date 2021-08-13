@@ -5,9 +5,9 @@
 <script lang="ts">
 import { Store, useStore } from 'vuex';
 import { defineComponent, onMounted, watch } from 'vue';
-import { RootState } from './store/stateModel';
-import { getLang } from './views/lib';
-import i18n from './lang';
+import { RootState } from '@/store/stateModel';
+import { getLang } from '@/views/lib';
+import i18n from '@/lang';
 
 export default defineComponent({
     setup() {

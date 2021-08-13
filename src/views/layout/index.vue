@@ -17,7 +17,7 @@
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
-import { getMenuStatus } from '../../views/lib';
+import { getMenuStatus } from '@/views/lib';
 
 export default defineComponent({
     components: {

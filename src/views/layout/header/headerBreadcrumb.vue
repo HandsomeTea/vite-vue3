@@ -17,7 +17,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { getMenuStatus, getScreenSize, toogleMenu } from '../../../views/lib';
+import { getMenuStatus, getScreenSize, toogleMenu } from '@/views/lib';
 
 export default defineComponent({
     mixins: [toogleMenu],
