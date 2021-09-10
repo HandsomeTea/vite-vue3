@@ -8,6 +8,8 @@
         <van-button type="primary">主要按钮</van-button>
         <br />
         <van-icon name="chat-o" />
+        <br/>
+        <n-button type="info">Info</n-button>
     </el-main>
 </template>
 
