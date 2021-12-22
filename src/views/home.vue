@@ -8,17 +8,18 @@
         <van-button type="primary">主要按钮</van-button>
         <br />
         <van-icon name="chat-o" />
-        <br/>
+        <br />
         <n-button type="info">Info</n-button>
+        <router-view />
     </el-main>
 </template>
 
 <script lang="ts">
-import Api from '@/api';
-import { Tips } from '@/ui-frame';
+// import Api from '@/api';
+// import { Tips } from '@/ui-frame';
 
 import { defineComponent, ref } from 'vue';
-import { getLoginUserInfo, getLang } from '@/views/lib';
+import { getLoginUserInfo, getLang, redirectTo } from '@/views/lib';
 import { useStore, Store } from 'vuex';
 import { RootState } from '@/store/stateModel';
 
@@ -35,24 +36,26 @@ export default defineComponent({
             user,
             language: getLang(),
             setLanguage,
-            test
+            test,
+            redirectTo
         };
     },
     methods: {
         async testApi(): Promise<void | boolean> {
-            await this.setLanguage('en');
-            // console.log(this.$t('SUCCESS'));
+            // await this.setLanguage('en');
+            // // console.log(this.$t('SUCCESS'));
 
-            const { error } = await Api.Account.test({ 'test-body': '中文测试' });
+            // const { error } = await Api.Account.test({ 'test-body': '中文测试' });
 
-            if (error) {
-                // throw error.type || 'USER_SAVE_FAILED';
-                // return Tips.alert('test message', 'test');
-                return Tips.error(error?.type || 'USER_SAVE_FAILED');
-            }
-            Tips.success('SUCCESS');
-            // console.log(456);
-            // console.log(data);
+            // if (error) {
+            //     // throw error.type || 'USER_SAVE_FAILED';
+            //     // return Tips.alert('test message', 'test');
+            //     return Tips.error(error?.type || 'USER_SAVE_FAILED');
+            // }
+            // Tips.success('SUCCESS');
+            // // console.log(456);
+            // // console.log(data);
+            this.redirectTo('/aaa');
         }
     }
 });

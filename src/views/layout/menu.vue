@@ -1,10 +1,24 @@
 <template>
     <el-collapse-transition>
-        <el-menu default-active="1" :collapse="isHideMenu" class="layout_menu" background-color="#16181D" text-color="rgba(255,255,255,.7)" active-text-color="#409EFF">
-            <el-menu-item index="1" @click="redirectTo('/index')">
+        <el-menu
+            :default-active="`/${$route.path.split('/')[1]}`"
+            :collapse="isHideMenu"
+            class="layout_menu"
+            background-color="#16181D"
+            text-color="rgba(255,255,255,.7)"
+            active-text-color="#409EFF"
+        >
+            <el-menu-item index="/index" @click="redirectTo('/index')">
                 <i class="el-icon-menu"></i>
-                <template #title>首页</template>
+                <span>首页</span>
             </el-menu-item>
+            <el-submenu index="/test">
+                <template #title>
+                    <i class="el-icon-menu"></i>
+                    <span>测试组</span>
+                </template>
+                <el-menu-item index="/test" @click="redirectTo('/test')"> <i class="el-icon-menu"></i><span>测试</span> </el-menu-item>
+            </el-submenu>
         </el-menu>
     </el-collapse-transition>
 </template>

@@ -22,12 +22,14 @@ module.exports = {
     globals: {
         window: true,
         document: true,
+        Element: true,
         HttpException: true,
         ApiResult: true,
         HttpArgument: true,
         SupportLanguageType: true
     },
     rules: {
+        'vue/multi-word-component-names': 0,
         '@typescript-eslint/no-explicit-any': 2,
         '@typescript-eslint/no-inferrable-types': 2,
         indent: [2, 4, { SwitchCase: 1 }],

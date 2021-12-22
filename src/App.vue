@@ -5,20 +5,22 @@
 <script lang="ts">
 import { Store, useStore } from 'vuex';
 import { defineComponent, onMounted, watch } from 'vue';
+import { useRoute } from 'vue-router';
 import { RootState } from '@/store/stateModel';
 import { getLang } from '@/views/lib';
 import i18n from '@/lang';
 
 export default defineComponent({
     setup() {
-        const store: Store<RootState> = useStore();
-
+        // 设置语言
         const language = getLang();
 
         watch(language, () => {
             i18n.global.locale = language.value;
         });
 
+        // 适应窗口大小
+        const store: Store<RootState> = useStore();
         const setWindowSize = () => store.dispatch('setScreenType');
 
         onMounted(() => {
@@ -38,6 +40,13 @@ export default defineComponent({
                     }, waitTime);
                 }
             };
+        });
+
+        // 设置浏览器标签的title
+        const route = useRoute();
+
+        watch(() => route.path, () => {
+            document.title = route.meta.i18nNavigateName as string || 'vite app';
         });
 
         return {

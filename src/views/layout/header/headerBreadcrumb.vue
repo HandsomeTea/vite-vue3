@@ -7,24 +7,57 @@
 
         <li class="item">
             <el-breadcrumb separator="/" class="route_path">
-                <el-breadcrumb-item v-if="(isHideMenu && platform === 'phone') || platform !== 'phone'"> 首页 </el-breadcrumb-item>
-                <el-breadcrumb-item v-if="(isHideMenu && platform === 'phone') || platform !== 'phone'"> 活动管理 </el-breadcrumb-item>
-                <el-breadcrumb-item>活动列表</el-breadcrumb-item>
+                <template v-for="(navigate, i) in navigateData">
+                    <el-breadcrumb-item
+                        :key="i + '1'"
+                        v-if="i <= 1 && ((isHideMenu && platform === 'phone') || platform !== 'phone')"
+                        :to="navigate.path && navigate.path !== $route.path ? { path: navigate.path } : null"
+                    >
+                        {{ $t(navigate.nameI18n) }}
+                    </el-breadcrumb-item>
+                    <el-breadcrumb-item :key="i + '2'" v-if="i > 1"> {{ $t(navigate.nameI18n) }}</el-breadcrumb-item>
+                </template>
             </el-breadcrumb>
         </li>
     </ul>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, Ref, ref, watch } from 'vue';
 import { getMenuStatus, getScreenSize, toogleMenu } from '@/views/lib';
+import { RouteLocationMatched, useRoute } from 'vue-router';
 
 export default defineComponent({
     mixins: [toogleMenu],
     setup() {
+        const route = useRoute();
+        const navigateData: Ref<Array<{ path?: string, nameI18n: string }>> = ref([]);
+        const dealPathInfo = (matchedInfo: Array<RouteLocationMatched>) => {
+            navigateData.value = [];
+            matchedInfo.map(a => {
+                if (a.path !== '/') {
+                    if (typeof a.meta.i18nNavigateGroupName === 'string') {
+                        navigateData.value.push({
+                            nameI18n: a.meta.i18nNavigateGroupName
+                        });
+                    }
+                    navigateData.value.push({
+                        path: a.path,
+                        nameI18n: a.meta.i18nNavigateName as string || 'vite app'
+                    });
+                }
+            });
+        };
+
+        dealPathInfo(route.matched);
+        watch(() => route.path, () => {
+            dealPathInfo(route.matched);
+        });
+
         return {
             isHideMenu: getMenuStatus(),
-            platform: getScreenSize()
+            platform: getScreenSize(),
+            navigateData
         };
     }
 });
@@ -44,6 +77,7 @@ export default defineComponent({
     display: inline-block;
     vertical-align: middle;
     margin-right: 20px;
+    margin-left: 10px;
 }
 
 .side_shift_title {

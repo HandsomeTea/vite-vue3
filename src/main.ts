@@ -9,11 +9,10 @@ import '@/assets';
 const app = createApp(App)
     .use(store)
     .use(router)
-    .use(i18n);
+    .use(i18n)
+    .use(NaiveComponents);
 
-[...VantComponents, ...ElementPlusComponents].forEach(component => {
-    app.use(component);
-});
-app.use(NaiveComponents);
+ElementPlusComponents(app);
+VantComponents(app);
 
 app.mount('#app');

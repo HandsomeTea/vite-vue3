@@ -8,7 +8,17 @@ const routes: Array<RouteRecordRaw> = [{
     component: layoutModule['../views/layout/index.vue'],
     children: [{
         path: '/index',
+        meta: { i18nNavigateName: '首页' },
         component: homeModule['../views/home.vue']
+    }, {
+        path: '/test',
+        meta: { i18nNavigateName: '测试', i18nNavigateGroupName: '测试组' },
+        component: homeModule['../views/test.vue'],
+        children: [{
+            path: '/test/edit',
+            meta: { i18nNavigateName: '测试编辑' },
+            component: homeModule['../views/test-edit.vue']
+        }]
     }]
 }];
 const env = import.meta.env;
