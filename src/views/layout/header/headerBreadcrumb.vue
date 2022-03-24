@@ -1,8 +1,10 @@
 <template>
     <ul :class="['head_title', { side_shift_title: isHideMenu === true }]">
         <li class="item side_move" @click="toogleMenu()">
-            <i class="el-icon-s-fold toogle_menu_icon" v-show="!isHideMenu"></i>
-            <i class="el-icon-s-unfold toogle_menu_icon" v-show="isHideMenu"></i>
+            <el-icon class="toogle_menu_icon">
+                <fold style="height: 20px; width: 20px" v-show="!isHideMenu" />
+                <expand style="height: 20px; width: 20px" v-show="isHideMenu" />
+            </el-icon>
         </li>
 
         <li class="item">

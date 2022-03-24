@@ -9,16 +9,20 @@
             active-text-color="#409EFF"
         >
             <el-menu-item index="/index" @click="redirectTo('/index')">
-                <i class="el-icon-menu"></i>
+                <el-icon><location /></el-icon>
                 <span>首页</span>
             </el-menu-item>
-            <el-submenu index="/test">
+
+            <el-sub-menu index="/test">
                 <template #title>
-                    <i class="el-icon-menu"></i>
+                    <el-icon><location /></el-icon>
                     <span>测试组</span>
                 </template>
-                <el-menu-item index="/test" @click="redirectTo('/test')"> <i class="el-icon-menu"></i><span>测试</span> </el-menu-item>
-            </el-submenu>
+                <el-menu-item index="/test" @click="redirectTo('/test')">
+                    <el-icon><location /></el-icon>
+                    <span>测试</span>
+                </el-menu-item>
+            </el-sub-menu>
         </el-menu>
     </el-collapse-transition>
 </template>
