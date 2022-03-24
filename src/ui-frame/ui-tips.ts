@@ -1,13 +1,8 @@
-import { ElMessage, ElMessageBox, ElLoading, ElNotification } from 'element-plus';
+import { ElMessage, ElMessageBox, ElLoading, ElNotification, ElMessageBoxOptions, MessageBoxData, LoadingOptions, NotificationProps } from 'element-plus';
 import { Toast, Dialog } from 'vant';
-
-import { INotificationOptions } from 'element-plus/lib/el-notification/src/notification.type';
-import { ILoadingInstance, ILoadingOptions } from 'element-plus/lib/el-loading/src/loading.type';
-import { ElMessageBoxOptions, MessageBoxData } from 'element-plus/lib/el-message-box/src/message-box.type';
 
 import i18n from '@/lang';
 import store from '@/store';
-import { ComponentInstance } from 'vant/lib/utils';
 
 interface CloseNotificationFn {
     (): void;
@@ -59,6 +54,7 @@ class UITool {
             });
         }
     }
+
     public warn(message: string): void {
         if (this.isMobile) {
             Toast({
@@ -134,7 +130,7 @@ class UITool {
         }).catch(() => false);
     }
 
-    public loading(option?: ILoadingOptions, text?: string): ILoadingInstance | ComponentInstance {
+    public loading(option?: LoadingOptions, text?: string) {
         if (this.isMobile) {
             return Toast.loading({
                 message: this.t(text || ''),
@@ -148,7 +144,7 @@ class UITool {
         });
     }
 
-    public noticing(title: string, message: string, option?: INotificationOptions) {
+    public noticing(title: string, message: string, option?: NotificationProps) {
         const noticing = ElNotification({
             ...option,
             title: this.t(title),
@@ -159,7 +155,7 @@ class UITool {
         return noticing;
     }
 
-    public noticed(title: string, message: string, option?: INotificationOptions) {
+    public noticed(title: string, message: string, option?: NotificationProps) {
         const noticed = ElNotification({
             ...option,
             title: this.t(title),
