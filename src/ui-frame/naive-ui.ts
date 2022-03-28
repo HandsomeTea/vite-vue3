@@ -1,8 +1,4 @@
-import {
-    create,
-    NButton
-} from 'naive-ui';
-
-export default create({
-    components: [NButton]
-});
+// 通用字体
+import 'vfonts/Lato.css';
+// 等宽字体
+import 'vfonts/FiraCode.css';
