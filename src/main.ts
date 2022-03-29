@@ -3,7 +3,7 @@ import App from '@/App.vue';
 import router from '@/router';
 import store from '@/store';
 import i18n from '@/lang';
-import { ElementPlusComponents, VantComponents } from '@/ui-frame';
+import { ElementPlusComponents } from '@/ui-frame';
 import '@/assets';
 
 const app = createApp(App)
@@ -13,6 +13,6 @@ const app = createApp(App)
 // .use(NaiveComponents);
 
 ElementPlusComponents(app);
-VantComponents(app);
+// VantComponents(app);
 
 app.mount('#app');

@@ -15,8 +15,8 @@
 </template>
 
 <script lang="ts">
-// import Api from '@/api';
-// import { Tips } from '@/ui-frame';
+import Api from '@/api';
+import { Tips } from '@/ui-frame';
 
 import { defineComponent, ref } from 'vue';
 import { getLoginUserInfo, getLang, redirectTo } from '@/views/lib';
@@ -41,21 +41,20 @@ export default defineComponent({
         };
     },
     methods: {
-        async testApi(): Promise<void | boolean> {
-            // await this.setLanguage('en');
-            // // console.log(this.$t('SUCCESS'));
+        async testApi() {
+            await this.setLanguage('en');
+            // console.log(this.$t('SUCCESS'));
 
-            // const { error } = await Api.Account.test({ 'test-body': '中文测试' });
+            const { error } = await Api.Account.test({ 'test-body': '中文测试' });
 
-            // if (error) {
-            //     // throw error.type || 'USER_SAVE_FAILED';
-            //     // return Tips.alert('test message', 'test');
-            //     return Tips.error(error?.type || 'USER_SAVE_FAILED');
-            // }
-            // Tips.success('SUCCESS');
-            // // console.log(456);
-            // // console.log(data);
-            this.redirectTo('/aaa');
+            if (error) {
+                // throw error.type || 'USER_SAVE_FAILED';
+                // return Tips.alert('test message', 'test');
+                return Tips.error(error?.type || 'USER_SAVE_FAILED');
+            }
+            Tips.success('SUCCESS');
+            // console.log(456);
+            // console.log(data);
         }
     }
 });

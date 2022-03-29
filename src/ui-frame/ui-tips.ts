@@ -4,6 +4,12 @@ import { Toast, Dialog } from 'vant';
 import i18n from '@/lang';
 import store from '@/store';
 
+import 'element-plus/theme-chalk/el-message.css';
+import 'element-plus/theme-chalk/el-message-box.css';
+import 'element-plus/theme-chalk/el-button.css';
+import 'element-plus/theme-chalk/el-loading.css';
+import 'element-plus/theme-chalk/el-notification.css';
+
 interface CloseNotificationFn {
     (): void;
 }

@@ -17,6 +17,8 @@ declare module 'vue' {
     ElSubMenu: typeof import('element-plus/es')['ElSubMenu']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     NButton: typeof import('naive-ui')['NButton']
+    VanButton: typeof import('vant/es')['Button']
+    VanIcon: typeof import('vant/es')['Icon']
   }
 }
 

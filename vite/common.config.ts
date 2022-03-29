@@ -3,20 +3,16 @@ import vue from '@vitejs/plugin-vue';
 import path from 'path';
 import AutoImport from 'unplugin-auto-import/vite';
 import Components from 'unplugin-vue-components/vite';
-import { ElementPlusResolver, NaiveUiResolver } from 'unplugin-vue-components/resolvers';
-import styleImport, { VantResolve } from 'vite-plugin-style-import';
+import { ElementPlusResolver, NaiveUiResolver, VantResolver } from 'unplugin-vue-components/resolvers';
 
 export default {
     plugins: [
         vue(),
-        styleImport({
-            resolves: [VantResolve()]
-        }),
         AutoImport({
-            resolvers: [ElementPlusResolver(), NaiveUiResolver()]
+            resolvers: [ElementPlusResolver(), NaiveUiResolver(), VantResolver()]
         }),
         Components({
-            resolvers: [ElementPlusResolver(), NaiveUiResolver()]
+            resolvers: [ElementPlusResolver(), NaiveUiResolver(), VantResolver()]
         })
     ],
     publicDir: './public',
