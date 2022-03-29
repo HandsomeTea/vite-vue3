@@ -44,6 +44,7 @@ export default defineComponent({
 .layout_menu {
     overflow: hidden;
     height: calc(100% - @layout_head_height) !important;
+    border-right-color: #16181d;
 }
 
 .layout_menu:hover {
