@@ -97,6 +97,8 @@ class HTTP {
             errorResult = {
                 status,
                 httpInfo: statusText,
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
                 ...typeof data === 'string' ? { error: { info: data } } : data
             };
         }
