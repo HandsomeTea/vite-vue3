@@ -60,7 +60,7 @@
     "vite": "^2.8.6",
     "vite-plugin-optimize-persist": "^0.1.2",
     "vite-plugin-package-config": "^0.1.1",
-    "vue-tsc": "^0.33.9"
+    "vue-tsc": "^0.39.5"
   },
   "vite": {
     "optimizeDeps": {
