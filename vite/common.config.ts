@@ -1,4 +1,6 @@
 import { UserConfig } from 'vite';
+import OptimizationPersist from 'vite-plugin-optimize-persist';
+import PkgConfig from 'vite-plugin-package-config';
 import vue from '@vitejs/plugin-vue';
 import path from 'path';
 import AutoImport from 'unplugin-auto-import/vite';
@@ -7,6 +9,8 @@ import { ElementPlusResolver, NaiveUiResolver, VantResolver } from 'unplugin-vue
 
 export default {
     plugins: [
+        PkgConfig(),
+        OptimizationPersist(),
         vue(),
         AutoImport({
             resolvers: [ElementPlusResolver(), NaiveUiResolver(), VantResolver()]
