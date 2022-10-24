@@ -12,9 +12,15 @@ class Exception extends Error {
 
         this.status = error.status;
         this.type = error.type;
-        this.error = error.error;
+        this.error = error.error || {};
         this.httpInfo = error.httpInfo;
     }
+}
+
+interface RestHttpArgument {
+    params?: Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
+    data?: Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
+    headers?: Record<string, string | string[] | number | boolean | null>;
 }
 
 export const HTTP = new class RestApi {
@@ -78,7 +84,7 @@ export const HTTP = new class RestApi {
         // 这里只处理 response.status >= 200 && response.status <= 207 的情况
         const { data /*, config, headers, request, status, statusText*/ } = response;
 
-        return Promise.resolve(data.data);
+        return Promise.resolve(data);
     }
 
     private async receiveResponseNotSuccess(error: AxiosError): Promise<HttpException> {
@@ -95,42 +101,58 @@ export const HTTP = new class RestApi {
         if (response) {
             const { status, statusText, data } = response;
 
-            errorResult = {
-                status,
-                httpInfo: statusText,
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                ...typeof data === 'string' ? { error: { info: data } } : data
-            };
+            try {
+                // data:{status,code,message,source,reason}
+                errorResult = {
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
+                    status: data.status || status,
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
+                    type: data.code || 'INTERNAL_SERVER_ERROR',
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
+                    httpInfo: data.message || statusText,
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
+                    error: { ...delete data.status && delete data.code && delete data.message && data }
+                };
+            } catch (e) {
+                errorResult = {
+                    status,
+                    type: 'INTERNAL_SERVER_ERROR',
+                    httpInfo: statusText,
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
+                    error: { info: data }
+                };
+            }
         }
 
         return Promise.reject(new Exception(errorResult));
     }
 
-    public async send(url: string, method: Method, options: HttpArgument): Promise<AxiosResponse> {
+    private async send(url: string, method: Method, options: RestHttpArgument): Promise<AxiosResponse> {
         return await this.Service.request({
             url,
             method,
-            // baseURL: ['development', undefined].includes(process?.env?.NODE_ENV) ? undefined : 'https://xxx.xxx.cxx',
-            headers: options.headers,
-            params: { ...options.params },
-            data: typeof options.data === 'object' && !Array.isArray(options.data) ? { ...options.data } : options.data
+            ...options
         });
     }
 
-    public async post(url: string, options: HttpArgument): Promise<AxiosResponse> {
-        return await this.send(url, 'post', { params: options.params, headers: options.headers, data: options.data });
+    public async post(url: string, options: RestHttpArgument): Promise<AxiosResponse> {
+        return await this.send(url, 'post', options);
     }
 
-    public async delete(url: string, options: HttpArgument): Promise<AxiosResponse> {
-        return await this.send(url, 'delete', { params: options.params, headers: options.headers, data: options.data });
+    public async delete(url: string, options: RestHttpArgument): Promise<AxiosResponse> {
+        return await this.send(url, 'delete', options);
     }
 
-    public async put(url: string, options: HttpArgument): Promise<AxiosResponse> {
-        return await this.send(url, 'put', { params: options.params, headers: options.headers, data: options.data });
+    public async put(url: string, options: RestHttpArgument): Promise<AxiosResponse> {
+        return await this.send(url, 'put', options);
     }
 
-    public async get(url: string, options: HttpArgument): Promise<AxiosResponse> {
-        return await this.send(url, 'get', { params: options.params, headers: options.headers, data: options.data });
+    public async get(url: string, options: RestHttpArgument): Promise<AxiosResponse> {
+        return await this.send(url, 'get', options);
     }
 };

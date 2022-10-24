@@ -15,9 +15,8 @@ export default {
         proxy: {
             '/foo': 'http://localhost:4567/foo',
             '/api': {
-                target: 'http://jsonplaceholder.typicode.com',
-                changeOrigin: true,
-                rewrite: (path) => path.replace(/^\/api/, '')
+                target: 'http://localhost:3003',
+                changeOrigin: true
             },
             '^/fallback/.*': {
                 target: 'http://jsonplaceholder.typicode.com',

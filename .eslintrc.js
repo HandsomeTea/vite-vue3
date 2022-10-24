@@ -25,7 +25,6 @@ module.exports = {
         Element: true,
         HttpException: true,
         ApiResult: true,
-        HttpArgument: true,
         SupportLanguageType: true
     },
     rules: {
