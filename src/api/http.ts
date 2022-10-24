@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig, AxiosResponse, AxiosError, Method } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse, AxiosError, Method, AxiosInstance } from 'axios';
 import Agent from 'agentkeepalive';
 
 class Exception extends Error {
@@ -17,30 +17,31 @@ class Exception extends Error {
     }
 }
 
-class HTTP {
+export const HTTP = new class RestApi {
+    private Service: AxiosInstance;
     constructor() {
-        this._init();
+        this.Service = axios.create({
+            timeout: 10000,
+            httpAgent: new Agent({
+                keepAlive: true,
+                timeout: 60000, // active socket keepalive for 60 seconds
+                freeSocketTimeout: 30000, // free socket keepalive for 30 seconds
+                freeSocketKeepAliveTimeout: 10,
+                socketActiveTTL: 100
+            })
+        });
+        this.init();
     }
 
-    private _init(): void {
-        axios.defaults.timeout = 10000;
-        axios.defaults.httpAgent = new Agent({
-            keepAlive: true,
-            timeout: 60000, // active socket keepalive for 60 seconds
-            freeSocketTimeout: 30000, // free socket keepalive for 30 seconds
-            freeSocketKeepAliveTimeout: 10,
-            socketActiveTTL: 100
-        });
-        // axios.defaults.headers.common['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
-
+    private init(): void {
         // 请求拦截器
-        axios.interceptors.request.use(this._beforeSendToServer, this._beforeSendToServerButError);
+        this.Service.interceptors.request.use(this.beforeSendToServer, this.beforeSendToServerButError);
 
         // 响应拦截器
-        axios.interceptors.response.use(this._receiveSuccessResponse, this._receiveResponseNotSuccess);
+        this.Service.interceptors.response.use(this.receiveSuccessResponse, this.receiveResponseNotSuccess);
     }
 
-    private _beforeSendToServer(config: AxiosRequestConfig): AxiosRequestConfig {
+    private beforeSendToServer(config: AxiosRequestConfig): AxiosRequestConfig {
         const zh = config.url?.match(/[\u4e00-\u9fa5]/g);
 
         if (zh) {
@@ -60,7 +61,7 @@ class HTTP {
         return config;
     }
 
-    private async _beforeSendToServerButError(error: unknown): Promise<HttpException> {
+    private async beforeSendToServerButError(error: unknown): Promise<HttpException> {
         return Promise.reject(
             new Exception({
                 httpInfo: `${error}`,
@@ -73,14 +74,14 @@ class HTTP {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private async _receiveSuccessResponse(response: AxiosResponse): Promise<any> {
+    private async receiveSuccessResponse(response: AxiosResponse): Promise<any> {
         // 这里只处理 response.status >= 200 && response.status <= 207 的情况
         const { data /*, config, headers, request, status, statusText*/ } = response;
 
         return Promise.resolve(data.data);
     }
 
-    private async _receiveResponseNotSuccess(error: AxiosError): Promise<HttpException> {
+    private async receiveResponseNotSuccess(error: AxiosError): Promise<HttpException> {
         // const { message, name, description, number, fileName, lineNumber, columnNumber, stack, code } = error.toJSON();
         const { response, config, request: { responseURL } } = error;
         // const { url, baseURL, method } = config;
@@ -107,7 +108,7 @@ class HTTP {
     }
 
     public async send(url: string, method: Method, options: HttpArgument): Promise<AxiosResponse> {
-        return await axios.request({
+        return await this.Service.request({
             url,
             method,
             // baseURL: ['development', undefined].includes(process?.env?.NODE_ENV) ? undefined : 'https://xxx.xxx.cxx',
@@ -132,6 +133,4 @@ class HTTP {
     public async get(url: string, options: HttpArgument): Promise<AxiosResponse> {
         return await this.send(url, 'get', { params: options.params, headers: options.headers, data: options.data });
     }
-}
-
-export default new HTTP();
+};
