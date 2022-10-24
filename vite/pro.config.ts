@@ -13,6 +13,15 @@ export default {
         cssCodeSplit: true,
         sourcemap: false,
         minify: 'terser',
-        chunkSizeWarningLimit: 500
+        chunkSizeWarningLimit: 500,
+        terserOptions: {
+            // 生产环境下移除console
+            compress: {
+                // eslint-disable-next-line camelcase
+                drop_console: true,
+                // eslint-disable-next-line camelcase
+                drop_debugger: true
+            }
+        }
     }
 } as UserConfig;
