@@ -1,32 +1,31 @@
 import { UserConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
+import { visualizer } from 'rollup-plugin-visualizer';
 import path from 'path';
 import AutoImport from 'unplugin-auto-import/vite';
 import Components from 'unplugin-vue-components/vite';
-import {
-	ElementPlusResolver
-	// , NaiveUiResolver, VantResolver
-} from 'unplugin-vue-components/resolvers';
+import { ElementPlusResolver, NaiveUiResolver, VantResolver } from 'unplugin-vue-components/resolvers';
 
 export default {
 	plugins: [
 		vue(),
 		AutoImport({
 			resolvers: [
-				ElementPlusResolver()
-				// NaiveUiResolver(),
-				// VantResolver(),
+				ElementPlusResolver(),
+				NaiveUiResolver(),
+				VantResolver()
 			],
 			dts: path.join(__dirname, '../auto-imports.d.ts')
 		}),
 		Components({
 			resolvers: [
-				ElementPlusResolver()
-				// NaiveUiResolver(),
-				// VantResolver()
+				ElementPlusResolver(),
+				NaiveUiResolver(),
+				VantResolver()
 			],
 			dts: path.join(__dirname, '../components.d.ts')
-		})
+		}),
+		visualizer({ filename: 'static-analysis.html' })
 	],
 	publicDir: './public',
 	resolve: {

@@ -107,3 +107,4 @@ dist
 mark.*
 auto-imports.d.ts
 components.d.ts
+static-analysis.html

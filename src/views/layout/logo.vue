@@ -1,6 +1,6 @@
 <template>
 	<div class="layout_menu_header">
-		这是logo的位置
+		<img src="../../../public//logo.png">
 	</div>
 </template>
 
