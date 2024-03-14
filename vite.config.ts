@@ -6,6 +6,6 @@ import productConfig from './vite/pro.config';
 
 
 export default defineConfig(async ({ command }) => ({
-    ...common,
-    ...command === 'serve' ? developConfig : productConfig
+	...common,
+	...command === 'serve' ? developConfig : productConfig
 }));

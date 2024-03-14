@@ -1,4 +1,1 @@
-// 通用字体
-import 'vfonts/Lato.css';
-// 等宽字体
-import 'vfonts/FiraCode.css';
+// 字体等可在此引入

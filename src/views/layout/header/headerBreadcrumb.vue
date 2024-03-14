@@ -2,19 +2,17 @@
     <ul :class="['head_title', { side_shift_title: isHideMenu === true }]">
         <li class="item side_move" @click="toogleMenu()">
             <el-icon class="toogle_menu_icon">
-                <fold style="height: 20px; width: 20px" v-show="!isHideMenu" />
-                <expand style="height: 20px; width: 20px" v-show="isHideMenu" />
+                <Fold style="height: 20px; width: 20px" v-show="!isHideMenu" />
+                <Expand style="height: 20px; width: 20px" v-show="isHideMenu" />
             </el-icon>
         </li>
 
         <li class="item">
             <el-breadcrumb separator="/" class="route_path">
                 <template v-for="(navigate, i) in navigateData">
-                    <el-breadcrumb-item
-                        :key="i + '1'"
+                    <el-breadcrumb-item :key="i + '1'"
                         v-if="i <= 1 && ((isHideMenu && platform === 'phone') || platform !== 'phone')"
-                        :to="navigate.path && navigate.path !== $route.path ? { path: navigate.path } : null"
-                    >
+                        :to="navigate.path && navigate.path !== $route.path ? { path: navigate.path } : null">
                         {{ $t(navigate.nameI18n) }}
                     </el-breadcrumb-item>
                     <el-breadcrumb-item :key="i + '2'" v-if="i > 1"> {{ $t(navigate.nameI18n) }}</el-breadcrumb-item>
@@ -30,7 +28,7 @@ import { getMenuStatus, getScreenSize, toogleMenu } from '@/views/lib';
 import { RouteLocationMatched, useRoute } from 'vue-router';
 
 export default defineComponent({
-    mixins: [toogleMenu],
+    ...toogleMenu,
     setup() {
         const route = useRoute();
         const navigateData: Ref<Array<{ path?: string, nameI18n: string }>> = ref([]);

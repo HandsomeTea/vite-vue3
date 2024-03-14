@@ -13,10 +13,18 @@ export default {
         OptimizationPersist(),
         vue(),
         AutoImport({
-            resolvers: [ElementPlusResolver(), NaiveUiResolver(), VantResolver()]
+            resolvers: [
+                ElementPlusResolver(),
+                NaiveUiResolver(),
+                VantResolver()
+            ]
         }),
         Components({
-            resolvers: [ElementPlusResolver(), NaiveUiResolver(), VantResolver()]
+            resolvers: [
+                ElementPlusResolver(),
+                NaiveUiResolver(),
+                VantResolver()
+            ]
         })
     ],
     publicDir: './public',

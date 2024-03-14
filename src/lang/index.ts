@@ -9,12 +9,12 @@ import enErrorCode from './errorCode/en.json';
 import store from '@/store';
 
 const i18n = createI18n({
-    locale: store.state.language,
-    messages: {
-        'zh-cn': { ...zh, ...zhErrorCode },
-        'zh-tw': { ...tw, ...twErrorCode },
-        en: { ...en, ...enErrorCode }
-    }
+	locale: store.state.language,
+	messages: {
+		'zh-cn': { ...zh, ...zhErrorCode },
+		'zh-tw': { ...tw, ...twErrorCode },
+		en: { ...en, ...enErrorCode }
+	}
 });
 
 export default i18n;
