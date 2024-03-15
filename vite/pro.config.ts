@@ -40,8 +40,19 @@ export default {
 				entryFileNames: 'js/[name]-[hash:16].js',
 				// 用于命名代码拆分时创建的共享块的输出命名
 				// 　　chunkFileNames: 'js/[name].[hash].js',
-				// css
-				assetFileNames: () => {
+				assetFileNames: (chunkInfo) => {
+					if (
+						chunkInfo.name?.endsWith('.webm') ||
+						chunkInfo.name?.endsWith('.png') ||
+						chunkInfo.name?.endsWith('.jpg') ||
+						chunkInfo.name?.endsWith('.ico') ||
+						chunkInfo.name?.endsWith('.gif')
+					) {
+						return 'images/[name].[hash].[ext]';
+					} else if (chunkInfo.name?.endsWith('.css')) {
+						return 'css/[name].[hash].[ext]';
+					}
+
 					return '[ext]/[name].[hash].[ext]';
 				},
 				// 拆分js到模块文件夹，同一个模块的会合并到一起
@@ -53,5 +64,22 @@ export default {
 				}
 			}
 		}
+		// 图片从别的地址加载
+		// experimental: {
+		// 	renderBuiltUrl(filename: string) {
+		// 		if (
+		// 			filename.endsWith('.webm') ||
+		// 			filename.endsWith('.png') ||
+		// 			filename.endsWith('.jpg') ||
+		// 			filename.endsWith('.gif')
+		// 		) {
+		// 			const name = filename.replace('images/', '');
+
+		// 			return `https://cdnURL/images/${name}`;
+		// 		}
+
+		// 		return filename;
+		// 	}
+		// }
 	}
 } as UserConfig;

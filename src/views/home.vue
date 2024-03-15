@@ -11,8 +11,10 @@
 			主要按钮
 		</van-button>
 		<br>
+		van-icon
 		<van-icon name="chat-o" />
 		<br>
+		naive button
 		<n-button type="info">
 			Info
 		</n-button>
