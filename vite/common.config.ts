@@ -1,5 +1,6 @@
 import { UserConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
+import postcssPresetEnv from 'postcss-preset-env';
 import { visualizer } from 'rollup-plugin-visualizer';
 import path from 'path';
 import AutoImport from 'unplugin-auto-import/vite';
@@ -42,6 +43,9 @@ export default {
 					hack: `true; @import (reference) "${path.resolve(__dirname, '../src/assets/style/global-var.less')}";`
 				}
 			}
+		},
+		postcss: {
+			plugins: [postcssPresetEnv()]
 		}
 	}
 } as UserConfig;
