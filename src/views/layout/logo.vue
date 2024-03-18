@@ -1,6 +1,6 @@
 <template>
 	<div class="layout_menu_header">
-		<img src="../../../public//logo.png">
+		<img src="../../assets/image/logo.png">
 	</div>
 </template>
 

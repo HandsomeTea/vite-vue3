@@ -7,6 +7,14 @@ export default {
 		__APP_VERSION__: JSON.stringify('v1'),
 		'process.env.NODE_ENV': JSON.stringify('production')
 	},
+	// 为打包的资源添加统一的资源引用路径前缀，如微前端架构，或者多前端部署在一个目录时使用
+	// base: '/serverless-front',
+	/**
+	 * 公共资源目录
+	 * /public/logo.png，可直接/logo.png引用
+	 * 打包时直接放在dist根目录(放在其他目录则不会，所以为了打包规范，不把静态资源放在public，放在/src/assets/image/下)
+	 */
+	publicDir: 'public',
 	build: {
 		target: 'modules',
 		outDir: './dist',
