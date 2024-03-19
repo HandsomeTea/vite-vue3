@@ -28,6 +28,7 @@ export default {
 		}),
 		visualizer({ filename: 'static-analysis.html' })
 	],
+	// 默认也为public目录
 	publicDir: './public',
 	resolve: {
 		alias: [{

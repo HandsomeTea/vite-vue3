@@ -5,7 +5,9 @@ export default {
 	mode: 'production',
 	define: {
 		__APP_VERSION__: JSON.stringify('v1'),
-		'process.env.NODE_ENV': JSON.stringify('production')
+		'process.env': {
+			NODE_ENV: 'production'
+		}
 	},
 	// 为打包的资源添加统一的资源引用路径前缀，如微前端架构，或者多前端部署在一个目录时使用
 	// base: '/serverless-front',
