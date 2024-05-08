@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+    vite-vue3:
+        image: node:20.11.1
+        restart: always
+        container_name: vite-vue3
+        ports:
+            - 3000:3000
+        volumes:
+            - ../:/usr/src/app
+        command:
+            - sh
+            - -c
+            - |
+                cd /usr/src/app
+                [ ! -d "/usr/src/app/node_modules" ] && npm install
+                npm run start
