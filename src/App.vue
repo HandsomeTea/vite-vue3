@@ -3,10 +3,9 @@
 </template>
 
 <script lang="ts">
-import { Store, useStore } from 'vuex';
 import { defineComponent, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
-import { RootState } from '@/store/stateModel';
+import { useScreenStore } from '@/store';
 import { getLang } from '@/views/lib';
 import i18n from '@/lang';
 
@@ -20,8 +19,8 @@ export default defineComponent({
 		});
 
 		// 适应窗口大小
-		const store: Store<RootState> = useStore();
-		const setWindowSize = () => store.dispatch('setScreenType');
+		const store = useScreenStore();
+		const setWindowSize = () => store.setScreenType();
 
 		onMounted(() => {
 			let waitForResizeEndTimer: null | number = null;

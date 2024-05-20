@@ -35,11 +35,11 @@
 		"axios": "^1.6.8",
 		"element-plus": "^2.7.2",
 		"naive-ui": "^2.38.2",
+		"pinia": "^2.1.7",
 		"vant": "^4.9.0",
 		"vue": "^3.4.27",
 		"vue-i18n": "^9.13.1",
-		"vue-router": "^4.3.2",
-		"vuex": "^4.1.0"
+		"vue-router": "^4.3.2"
 	},
 	"devDependencies": {
 		"@types/node": "^20.12.10",

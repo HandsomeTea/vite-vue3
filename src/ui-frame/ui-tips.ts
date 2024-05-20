@@ -2,7 +2,7 @@ import { ElMessage, ElMessageBox, ElLoading, ElNotification, ElMessageBoxOptions
 import { showToast, Dialog, showLoadingToast } from 'vant';
 
 import i18n from '@/lang';
-import store from '@/store';
+import { useScreenStore } from '@/store';
 
 import 'element-plus/theme-chalk/el-message.css';
 import 'element-plus/theme-chalk/el-message-box.css';
@@ -26,7 +26,9 @@ class UITool {
 	}
 
 	private get isMobile(): boolean {
-		return store.state.screenType === 'phone' || store.state.screenType === 'ipad';
+		const store = useScreenStore();
+
+		return store.screenType === 'phone' || store.screenType === 'ipad';
 	}
 
 	public success(message: string): void {

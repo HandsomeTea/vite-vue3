@@ -6,10 +6,9 @@ import tw from './tw.json';
 import twErrorCode from './errorCode/tw.json';
 import en from './en.json';
 import enErrorCode from './errorCode/en.json';
-import store from '@/store';
 
 const i18n = createI18n({
-	locale: store.state.language,
+	locale: localStorage.getItem('language') || navigator.language.toLowerCase(),
 	messages: {
 		'zh-cn': { ...zh, ...zhErrorCode },
 		'zh-tw': { ...tw, ...twErrorCode },

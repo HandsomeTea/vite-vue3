@@ -28,15 +28,15 @@ import { Tips } from '@/ui-frame';
 
 import { defineComponent, ref } from 'vue';
 import { getLoginUserInfo, getLang, redirectTo } from '@/views/lib';
-import { useStore, Store } from 'vuex';
-import { RootState } from '@/store/stateModel';
+import { useLanguageTypeStore } from '@/store';
 
 export default defineComponent({
 	setup() {
 		const user = getLoginUserInfo();
-		const store: Store<RootState> = useStore();
-		const setLanguage = async (language: SupportLanguageType): Promise<void> => {
-			await store.dispatch('setLanguage', language);
+		const setLanguage = (language: SupportLanguageType) => {
+			const store = useLanguageTypeStore();
+
+			store.setLanguage(language);
 		};
 		const test = ref('string-data');
 
