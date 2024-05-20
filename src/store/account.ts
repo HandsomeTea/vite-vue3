@@ -7,7 +7,7 @@ export const useLoginStore = defineStore('login', {
 	}),
 	actions: {
 		setUserName(username: string) {
-			this.username = username
+			this.username = username;
 		}
 	},
 	getters: {
@@ -16,7 +16,7 @@ export const useLoginStore = defineStore('login', {
 			return {
 				userId: state.userId,
 				username: state.username
-			}
+			};
 		}
 	}
-})
+});
