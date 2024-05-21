@@ -14,7 +14,11 @@ export const useMenuStatusStore = defineStore('menuHiddenStatus', {
 	state: () => ({ menuHidden: false }),
 	actions: {
 		toogleSideShrink(isHidden?: boolean) {
-			this.menuHidden = Boolean(isHidden);
+			if (isHidden) {
+				this.menuHidden = true;
+			} else {
+				this.menuHidden = !this.menuHidden;
+			}
 		}
 	}
 });
