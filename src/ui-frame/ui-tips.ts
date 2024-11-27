@@ -1,4 +1,5 @@
-import { ElMessage, ElMessageBox, ElLoading, ElNotification, ElMessageBoxOptions, MessageBoxData, LoadingOptions, NotificationProps } from 'element-plus';
+import { ElMessage, ElMessageBox, ElLoading, ElNotification } from 'element-plus';
+import type { ElMessageBoxOptions, MessageBoxData, LoadingOptions, NotificationProps } from 'element-plus';
 import { showToast, Dialog, showLoadingToast } from 'vant';
 
 import i18n from '@/lang';

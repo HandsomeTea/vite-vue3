@@ -1,4 +1,5 @@
-import { createRouter, createWebHistory, RouteRecordRaw, RouteLocationNormalized, NavigationGuardNext, NavigationFailure, isNavigationFailure, createWebHashHistory } from 'vue-router';
+import { createRouter, createWebHistory, isNavigationFailure, createWebHashHistory } from 'vue-router';
+import type { RouteRecordRaw, RouteLocationNormalized, NavigationGuardNext, NavigationFailure } from 'vue-router';
 
 const homeModule = import.meta.glob('../views/*.vue');
 const layoutModule = import.meta.glob('../views/layout/*.vue');

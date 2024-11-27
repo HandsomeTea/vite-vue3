@@ -1,6 +1,6 @@
 import router from '@/router';
 import { computed } from 'vue';
-import { LocationQueryRaw } from 'vue-router';
+import type { LocationQueryRaw } from 'vue-router';
 import { useScreenStore, useMenuStatusStore, useLoginStore, useLanguageTypeStore } from '@/store';
 
 /** 路由跳转 */

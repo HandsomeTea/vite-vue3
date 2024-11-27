@@ -1,4 +1,5 @@
-import axios, { InternalAxiosRequestConfig, AxiosResponse, AxiosError, Method, AxiosInstance } from 'axios';
+import axios, { AxiosError } from 'axios';
+import type { InternalAxiosRequestConfig, Method, AxiosInstance, AxiosResponse } from 'axios';
 import Agent from 'agentkeepalive';
 
 class Exception extends Error {
@@ -124,7 +125,7 @@ export const HTTP = new class RestApi {
 					httpInfo: statusText,
 					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 					// @ts-ignore
-					error: { info: data }
+					error: { info: { ...data, message: `${e}` } }
 				};
 			}
 		}
