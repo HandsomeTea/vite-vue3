@@ -24,7 +24,7 @@ interface RestHttpArgument {
 	headers?: Record<string, string | string[] | number | boolean | null>;
 }
 
-export const HTTP = new class RestApi {
+export const HTTP = new (class RestApi {
 	private Service: AxiosInstance;
 	constructor() {
 		this.Service = axios.create({
@@ -42,29 +42,16 @@ export const HTTP = new class RestApi {
 
 	private init(): void {
 		// 请求拦截器
-		this.Service.interceptors.request.use(config => this.beforeSendToServer(config), this.beforeSendToServerButError);
+		this.Service.interceptors.request.use(
+			config => this.beforeSendToServer(config),
+			this.beforeSendToServerButError
+		);
 
 		// 响应拦截器
 		this.Service.interceptors.response.use(this.receiveSuccessResponse, this.receiveResponseNotSuccess);
 	}
 
 	private beforeSendToServer(config: InternalAxiosRequestConfig): InternalAxiosRequestConfig {
-		const zh = config.url?.match(/[\u4e00-\u9fa5]/g);
-
-		if (zh) {
-			const _obj: Record<string, string> = {};
-
-			for (let i = 0; i < zh.length; i++) {
-				if (!_obj[zh[i]]) {
-					_obj[zh[i]] = encodeURIComponent(zh[i]);
-				}
-			}
-
-			for (const key in _obj) {
-				config.url = config.url?.replace(new RegExp(key, 'g'), _obj[key]);
-			}
-		}
-
 		return config;
 	}
 
@@ -90,7 +77,11 @@ export const HTTP = new class RestApi {
 
 	private async receiveResponseNotSuccess(error: AxiosError): Promise<HttpException> {
 		// const { message, name, description, number, fileName, lineNumber, columnNumber, stack, code } = error.toJSON();
-		const { response, config, request: { responseURL } } = error;
+		const {
+			response,
+			config,
+			request: { responseURL }
+		} = error;
 		// const { url, baseURL, method } = config;
 
 		let errorResult: HttpException = {
@@ -116,7 +107,9 @@ export const HTTP = new class RestApi {
 					httpInfo: data.message || statusText,
 					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 					// @ts-ignore
-					error: { ...delete data.status && delete data.code && delete data.message && data }
+					error: {
+						...(delete data.status && delete data.code && delete data.message && data)
+					}
 				};
 			} catch (e) {
 				errorResult = {
@@ -156,4 +149,4 @@ export const HTTP = new class RestApi {
 	public async get(url: string, options: RestHttpArgument): Promise<AxiosResponse> {
 		return await this.send(url, 'get', options);
 	}
-};
+})();

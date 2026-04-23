@@ -1,70 +1,65 @@
 <template>
 	<ul :class="['head_title', { side_shift_title: isHideMenu === true }]">
 		<li class="item side_move" @click="toogleMenu()">
-			<el-icon class="toogle_menu_icon">
-				<Fold v-show="!isHideMenu" style="height: 20px; width: 20px" />
-				<Expand v-show="isHideMenu" style="height: 20px; width: 20px" />
-			</el-icon>
+			<icon-menu-fold class="toogle_menu_icon" v-show="!isHideMenu" style="height: 20px; width: 20px" />
+			<icon-menu-unfold class="toogle_menu_icon" v-show="isHideMenu" style="height: 20px; width: 20px" />
 		</li>
 
 		<li class="item">
-			<el-breadcrumb separator="/" class="route_path">
+			<a-breadcrumb separator="/" class="route_path">
 				<template v-for="(navigate, i) in navigateData">
-					<el-breadcrumb-item
+					<a-breadcrumb-item
 						v-if="i <= 1 && ((isHideMenu && platform === 'phone') || platform !== 'phone')"
 						:key="i + '1'"
-						:to="navigate.path && navigate.path !== $route.path ? { path: navigate.path } : null"
+						@click="navigate.path && navigate.path !== $route.path ? redirectTo(navigate.path) : null"
 					>
 						{{ $t(navigate.nameI18n) }}
-					</el-breadcrumb-item>
-					<el-breadcrumb-item v-if="i > 1" :key="i + '2'">
+					</a-breadcrumb-item>
+					<a-breadcrumb-item v-if="i > 1" :key="i + '2'">
 						{{ $t(navigate.nameI18n) }}
-					</el-breadcrumb-item>
+					</a-breadcrumb-item>
 				</template>
-			</el-breadcrumb>
+			</a-breadcrumb>
 		</li>
 	</ul>
 </template>
 
-<script lang="ts">
-import { defineComponent, Ref, ref, watch } from 'vue';
-import { getMenuStatus, getScreenSize, toogleMenu } from '@/views/lib';
-import { RouteLocationMatched, useRoute } from 'vue-router';
+<script setup lang="ts">
+import { onMounted, ref, watch } from 'vue';
+import { getMenuStatus, getScreenSize, toogleMenu, redirectTo } from '@/views/lib';
+import { useRoute, type RouteLocationMatched } from 'vue-router';
 
-export default defineComponent({
-	...toogleMenu,
-	setup() {
-		const route = useRoute();
-		const navigateData: Ref<Array<{ path?: string, nameI18n: string }>> = ref([]);
-		const dealPathInfo = (matchedInfo: Array<RouteLocationMatched>) => {
-			navigateData.value = [];
-			matchedInfo.map(a => {
-				if (a.path !== '/') {
-					if (typeof a.meta.i18nNavigateGroupName === 'string') {
-						navigateData.value.push({
-							nameI18n: a.meta.i18nNavigateGroupName
-						});
-					}
-					navigateData.value.push({
-						path: a.path,
-						nameI18n: a.meta.i18nNavigateName as string || 'vite app'
-					});
-				}
+const route = useRoute();
+const navigateData = ref<Array<{ path?: string; nameI18n: string }>>([]);
+const dealPathInfo = (matchedInfo: Array<RouteLocationMatched>) => {
+	navigateData.value = [];
+	matchedInfo.map(a => {
+		if (a.path !== '/') {
+			if (typeof a.meta.i18nNavigateGroupName === 'string') {
+				navigateData.value.push({
+					nameI18n: a.meta.i18nNavigateGroupName
+				});
+			}
+			navigateData.value.push({
+				path: a.path,
+				nameI18n: (a.meta.i18nNavigateName as string) || 'vite app'
 			});
-		};
+		}
+	});
+};
 
-		dealPathInfo(route.matched);
-		watch(() => route.path, () => {
-			dealPathInfo(route.matched);
-		});
-
-		return {
-			isHideMenu: getMenuStatus(),
-			platform: getScreenSize(),
-			navigateData
-		};
-	}
+onMounted(() => {
+	dealPathInfo(route.matched);
 });
+watch(
+	() => route.path,
+	() => {
+		dealPathInfo(route.matched);
+	}
+);
+const isHideMenu = getMenuStatus();
+const platform = getScreenSize();
+
 </script>
 
 <style lang="less" scoped>

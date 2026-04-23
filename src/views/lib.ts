@@ -51,12 +51,14 @@ export const getLang = () => {
 };
 
 /** 封装左侧菜单展开/折叠操作 */
-export const toogleMenu = {
-	methods: {
-		toogleMenu(status?: boolean) {
-			const store = useMenuStatusStore();
+export const toogleMenu = (status?: boolean) => {
+	const store = useMenuStatusStore();
 
-			return store.toogleSideShrink(status);
-		}
-	}
+	return store.toogleSideShrink(status);
+};
+
+export const setLanguage = (language: SupportLanguageType) => {
+	const store = useLanguageTypeStore();
+
+	store.setLanguage(language);
 };

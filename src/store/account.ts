@@ -11,8 +11,8 @@ export const useLoginStore = defineStore('login', {
 		}
 	},
 	getters: {
-		isLogin: (state) => Boolean(state.userId),
-		getUserInfo: (state) => {
+		isLogin: state => Boolean(state.userId),
+		getUserInfo: state => {
 			return {
 				userId: state.userId,
 				username: state.username

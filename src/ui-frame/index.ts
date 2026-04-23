@@ -1,11 +1,3 @@
-import ElementPlusComponents from './element-ui';
-import VantComponents from './vant';
-import NaiveComponents from './naive-ui';
-import Tips from './ui-tips';
+import Tips from './tips';
 
-export {
-	ElementPlusComponents,
-	VantComponents,
-	NaiveComponents,
-	Tips
-};
+export { Tips };

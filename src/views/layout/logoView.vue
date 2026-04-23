@@ -1,14 +1,8 @@
 <template>
 	<div class="layout_menu_header">
-		<img src="../../assets/image/logo.png">
+		<img src="../../assets/image/logo.png" />
 	</div>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue';
-
-export default defineComponent({});
-</script>
 
 <style lang="less" scoped>
 .layout_menu_header {

@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia';
 
-
 export const useLanguageTypeStore = defineStore('languageType', {
 	state: () => ({ language: window.navigator.language.toLowerCase() as SupportLanguageType }),
 	actions: {
@@ -24,7 +23,7 @@ export const useMenuStatusStore = defineStore('menuHiddenStatus', {
 });
 
 export const useScreenStore = defineStore('screenSize', {
-	state: () => ({ screenType: 'pc' } as { screenType: 'phone' | 'ipad' | 'spc' | 'pc' }),
+	state: () => ({ screenType: 'pc' }) as { screenType: 'phone' | 'ipad' | 'spc' | 'pc' },
 	actions: {
 		setScreenType() {
 			const size = document.body.offsetWidth;

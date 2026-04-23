@@ -1,18 +1,20 @@
-import pluginVue from 'eslint-plugin-vue';
-import vueTsEslintConfig from '@vue/eslint-config-typescript';
+import { globalIgnores } from 'eslint/config'
+import { defineConfigWithVueTs, vueTsConfigs } from '@vue/eslint-config-typescript'
+import pluginVue from 'eslint-plugin-vue'
+import pluginOxlint from 'eslint-plugin-oxlint'
+import skipFormatting from 'eslint-config-prettier/flat'
 import globals from 'globals';
 
-export default [
+// To allow more languages other than `ts` in `.vue` files, uncomment the following lines:
+// import { configureVueProject } from '@vue/eslint-config-typescript'
+// configureVueProject({ scriptLangs: ['ts', 'tsx'] })
+// More info at https://github.com/vuejs/eslint-config-typescript/#advanced-setup
+
+export default defineConfigWithVueTs(
 	{
 		name: 'app/files-to-lint',
-		files: ['**/*.{ts,mts,tsx,vue}']
+		files: ['**/*.{vue,ts,mts,tsx}'],
 	},
-	{
-		name: 'app/files-to-ignore',
-		ignores: ['**/dist/**', '**/dist-ssr/**', '**/coverage/**']
-	},
-	...pluginVue.configs['flat/essential'],
-	...vueTsEslintConfig(),
 	{
 		languageOptions: {
 			globals: {
@@ -39,6 +41,8 @@ export default [
 			'@typescript-eslint/no-inferrable-types': 2,
 			indent: [2, 'tab'],
 			'linebreak-style': [0, 'error', 'windows', 'unix'],
+			'arrow-parens': ['error', 'as-needed'],
+			'no-useless-rename': 'error',
 			quotes: [2, 'single'],
 			'no-caller': 2,
 			semi: ['error', 'always'],
@@ -46,7 +50,11 @@ export default [
 			'no-multiple-empty-lines': [2, { max: 2 }],
 			'no-console': 2,
 			'no-constant-condition': 2,
-			'no-extra-parens': 2,
+			'no-extra-parens': ['error', 'all', {
+				"ignoreJSX": "all",               // 忽略 Vue/JSX 模板中的括号
+				"nestedBinaryExpressions": false, // 允许在复杂的 a + (b * c) 中保留括号以利于阅读
+				"enforceForArrowConditionals": false
+			}],
 			'no-extra-semi': 2,
 			'no-func-assign': 2,
 			'no-mixed-spaces-and-tabs': [2, false],
@@ -54,6 +62,7 @@ export default [
 			camelcase: 2,
 			'comma-dangle': [2, 'never'],
 			'consistent-this': [2, 'self'],
+			'vue/comma-dangle': ['error', 'never'],
 			'no-multi-spaces': 2,
 			'no-multi-str': 2,
 			'no-redeclare': 2,
@@ -89,5 +98,13 @@ export default [
 			'no-useless-escape': 2,
 			'require-atomic-updates': 'off'
 		}
-	}
-];
+	},
+	globalIgnores(['**/dist/**', '**/dist-ssr/**', '**/coverage/**']),
+
+	...pluginVue.configs['flat/essential'],
+	vueTsConfigs.recommended,
+
+	...pluginOxlint.buildFromOxlintConfigFile('.oxlintrc.json'),
+
+	skipFormatting,
+)

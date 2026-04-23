@@ -1,50 +1,62 @@
-import { createRouter, createWebHistory, isNavigationFailure, createWebHashHistory } from 'vue-router';
-import type { RouteRecordRaw, RouteLocationNormalized, NavigationGuardNext, NavigationFailure } from 'vue-router';
+import { createRouter, createWebHashHistory, createWebHistory, isNavigationFailure } from 'vue-router';
+import type {
+	NavigationFailure,
+	RouteLocationNormalized,
+	RouteLocationNormalizedLoaded,
+	RouteRecordRaw
+} from 'vue-router';
 
-const homeModule = import.meta.glob('../views/*.vue');
-const layoutModule = import.meta.glob('../views/layout/*.vue');
-const routes: Array<RouteRecordRaw> = [{
-	path: '/',
-	redirect: '/index',
-	component: layoutModule['../views/layout/index.vue'],
-	children: [{
-		path: '/index',
-		meta: { i18nNavigateName: '首页' },
-		component: homeModule['../views/home.vue']
-	}, {
-		path: '/test',
-		meta: { i18nNavigateName: '测试', i18nNavigateGroupName: '测试组' },
-		component: homeModule['../views/test.vue'],
-		children: [{
-			path: '/test/edit',
-			meta: { i18nNavigateName: '测试编辑' },
-			component: homeModule['../views/test-edit.vue']
-		}]
-	}]
-}];
-const env = import.meta.env;
+const routes: Array<RouteRecordRaw> = [
+	{
+		path: '/',
+		redirect: '/index',
+		component: () => import('../views/layout/layoutIndex.vue'),
+		children: [
+			{
+				path: '/index',
+				meta: { i18nNavigateName: '首页' },
+				component: () => import('../views/homeView.vue')
+			},
+			{
+				path: '/test',
+				meta: { i18nNavigateName: '测试', i18nNavigateGroupName: '测试组' },
+				component: () => import('../views/testView.vue'),
+				children: [
+					{
+						path: '/test/edit',
+						meta: { i18nNavigateName: '测试编辑' },
+						component: () => import('../views/testEdit.vue')
+					}
+				]
+			}
+		]
+	}
+];
 const router = createRouter({
-	history: process.env.NODE_ENV === 'development' ? createWebHashHistory(env.BASE_URL) : createWebHistory(env.BASE_URL),
+	history:
+		import.meta.env.NODE_ENV === 'development'
+			? createWebHashHistory(import.meta.env.BASE_URL)
+			: createWebHistory(import.meta.env.BASE_URL),
 	routes
 });
-
 
 /**
  * 全局导航守卫
  */
 
 /* 前置导航守卫 */
-router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
-	// do something before next route
-	next();
+router.beforeEach((_to: RouteLocationNormalized, _from: RouteLocationNormalizedLoaded) => {
+	return true;
 });
 
 /* 后置导航守卫 */
-router.afterEach((to: RouteLocationNormalized, from: RouteLocationNormalized, failure?: NavigationFailure | void) => {
-	if (isNavigationFailure(failure)) {
-		// eslint-disable-next-line no-console
-		console.log('failed navigation', failure);
+router.afterEach(
+	(_to: RouteLocationNormalizedLoaded, _from: RouteLocationNormalizedLoaded, failure?: NavigationFailure | void) => {
+		if (isNavigationFailure(failure)) {
+			// eslint-disable-next-line no-console
+			console.log('failed navigation', failure);
+		}
 	}
-});
+);
 
 export default router;
