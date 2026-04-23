@@ -1,4 +1,4 @@
 # vite-vue3
 
-- nodejs：v20.11.1
-- npm：10.2.4
+- nodejs：v24.15.0
+- pnpm：10.33.0
