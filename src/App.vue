@@ -1,15 +1,28 @@
 <template>
-	<router-view />
+	<a-config-provider :locale="locale">
+		<router-view />
+	</a-config-provider>
 </template>
 
 <script setup lang="ts">
-import { onMounted, watch } from 'vue';
+import { computed, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useScreenStore } from '@/store';
 import { getLang } from '@/views/lib';
 import i18n from '@/lang';
 
+import zhCN from '@arco-design/web-vue/es/locale/lang/zh-cn';
+import enUS from '@arco-design/web-vue/es/locale/lang/en-us';
+import type { ArcoLang } from '@arco-design/web-vue/es/locale/interface';
+
+const languageMap: Record<SupportLanguageType, ArcoLang> = {
+	'en': enUS,
+	'zh-cn': zhCN
+};
 const language = getLang();
+const locale = computed(() => {
+	return languageMap[language.value] || zhCN;
+});
 
 watch(language, () => {
 	i18n.global.locale = language.value;

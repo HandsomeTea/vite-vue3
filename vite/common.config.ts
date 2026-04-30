@@ -9,6 +9,8 @@ import path from 'path';
 import AutoImport from 'unplugin-auto-import/vite';
 import Components from 'unplugin-vue-components/vite';
 import { ArcoResolver } from 'unplugin-vue-components/resolvers';
+import tailwindcss from '@tailwindcss/postcss';
+import autoprefixer from 'autoprefixer';
 
 
 export default {
@@ -64,7 +66,11 @@ export default {
 			}
 		},
 		postcss: {
-			plugins: [postcssPresetEnv()]
+			plugins: [
+				tailwindcss(),
+				autoprefixer(),
+				postcssPresetEnv()
+			]
 		}
 	}
 } as UserConfig;

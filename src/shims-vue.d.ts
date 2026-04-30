@@ -1,4 +1,4 @@
-type SupportLanguageType = 'zh-cn' | 'zh-tw' | 'en';
+type SupportLanguageType = 'zh-cn' | 'en';
 
 declare interface ExceptionInstance {
 	info: string;

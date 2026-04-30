@@ -1,2 +1,2 @@
 import './default.less';
-import './common/ele.ui.less';
+import './tailwind.less';
