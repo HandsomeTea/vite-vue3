@@ -1,32 +1,21 @@
 <template>
-	<ul :class="['head_title', { side_shift_title: isHideMenu === true }]">
-		<li class="item side_move" @click="toogleMenu()">
-			<icon-menu-fold class="toogle_menu_icon" v-show="!isHideMenu" style="height: 20px; width: 20px" />
-			<icon-menu-unfold class="toogle_menu_icon" v-show="isHideMenu" style="height: 20px; width: 20px" />
-		</li>
-
-		<li class="item">
-			<a-breadcrumb separator="/" class="route_path">
-				<template v-for="(navigate, i) in navigateData">
-					<a-breadcrumb-item
-						v-if="i <= 1 && ((isHideMenu && platform === 'phone') || platform !== 'phone')"
-						:key="i + '1'"
-						@click="navigate.path && navigate.path !== $route.path ? redirectTo(navigate.path) : null"
-					>
-						{{ $t(navigate.nameI18n) }}
-					</a-breadcrumb-item>
-					<a-breadcrumb-item v-if="i > 1" :key="i + '2'">
-						{{ $t(navigate.nameI18n) }}
-					</a-breadcrumb-item>
-				</template>
-			</a-breadcrumb>
-		</li>
-	</ul>
+	<a-breadcrumb separator="/">
+		<template v-for="(navigate, i) in navigateData">
+			<a-breadcrumb-item v-if="i <= 1 && ((isHideMenu && platform === 'phone') || platform !== 'phone')"
+				:key="i + '1'"
+				@click="navigate.path && navigate.path !== $route.path ? redirectTo(navigate.path) : null">
+				{{ $t(navigate.nameI18n) }}
+			</a-breadcrumb-item>
+			<a-breadcrumb-item v-if="i > 1" :key="i + '2'">
+				{{ $t(navigate.nameI18n) }}
+			</a-breadcrumb-item>
+		</template>
+	</a-breadcrumb>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue';
-import { getMenuStatus, getScreenSize, toogleMenu, redirectTo } from '@/views/lib';
+import { getMenuStatus, getScreenSize, redirectTo } from '@/views/lib';
 import { useRoute, type RouteLocationMatched } from 'vue-router';
 
 const route = useRoute();
@@ -62,43 +51,4 @@ const platform = getScreenSize();
 
 </script>
 
-<style lang="less" scoped>
-.head_title {
-	left: @layout_menu_width_big;
-	height: @layout_head_height;
-	overflow: hidden;
-}
-
-.item {
-	height: @layout_head_height;
-	line-height: @layout_head_height;
-	position: relative;
-	display: inline-block;
-	vertical-align: middle;
-	margin-right: 20px;
-	margin-left: 10px;
-}
-
-.side_shift_title {
-	left: @layout_menu_width_small;
-}
-
-.side_move {
-	margin-left: 12px;
-	margin-right: 0;
-	height: 40px;
-	line-height: 40px;
-	text-align: center;
-	.cp();
-}
-
-.toogle_menu_icon {
-	color: rgba(0, 0, 0, 0.45);
-	font-size: 24px;
-	margin-top: 8px;
-}
-
-.route_path {
-	margin-top: 18px;
-}
-</style>
+<style lang="less" scoped></style>

@@ -51,9 +51,9 @@ export default defineConfigWithVueTs(
 			'no-console': 2,
 			'no-constant-condition': 2,
 			'no-extra-parens': ['error', 'all', {
-				"ignoreJSX": "all",               // 忽略 Vue/JSX 模板中的括号
-				"nestedBinaryExpressions": false, // 允许在复杂的 a + (b * c) 中保留括号以利于阅读
-				"enforceForArrowConditionals": false
+				ignoreJSX: 'all',               // 忽略 Vue/JSX 模板中的括号
+				nestedBinaryExpressions: false, // 允许在复杂的 a + (b * c) 中保留括号以利于阅读
+				enforceForArrowConditionals: false
 			}],
 			'no-extra-semi': 2,
 			'no-func-assign': 2,
@@ -70,7 +70,11 @@ export default defineConfigWithVueTs(
 			'no-sparse-arrays': 2,
 			'no-unreachable': 2,
 			'no-unused-expressions': 2,
-			'no-unused-vars': [2, { vars: 'all', args: 'after-used' }],
+			'no-unused-vars': ['error', {
+				'argsIgnorePattern': '^_',
+				'varsIgnorePattern': '^_',
+				'caughtErrorsIgnorePattern': '^_'
+			}],
 			'@typescript-eslint/no-unused-vars': 2,
 			'no-use-before-define': 2,
 			'no-extra-boolean-cast': 2,

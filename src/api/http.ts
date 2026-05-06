@@ -107,9 +107,7 @@ export const HTTP = new (class RestApi {
 					httpInfo: data.message || statusText,
 					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 					// @ts-ignore
-					error: {
-						...(delete data.status && delete data.code && delete data.message && data)
-					}
+					error: data.data
 				};
 			} catch (e) {
 				errorResult = {

@@ -10,21 +10,21 @@ const routes: Array<RouteRecordRaw> = [
 	{
 		path: '/',
 		redirect: '/index',
-		component: () => import('../views/layout/layoutIndex.vue'),
+		component: () => import('../views/layout/layoutView.vue'),
 		children: [
 			{
 				path: '/index',
-				meta: { i18nNavigateName: '首页' },
+				meta: { i18nNavigateName: '首页', page: 'index' },
 				component: () => import('../views/homeView.vue')
 			},
 			{
 				path: '/test',
-				meta: { i18nNavigateName: '测试', i18nNavigateGroupName: '测试组' },
+				meta: { i18nNavigateName: '测试', i18nNavigateGroupName: '测试组', page: 'test' },
 				component: () => import('../views/testView.vue'),
 				children: [
 					{
 						path: '/test/edit',
-						meta: { i18nNavigateName: '测试编辑' },
+						meta: { i18nNavigateName: '测试编辑', page: 'testEdit' },
 						component: () => import('../views/testEdit.vue')
 					}
 				]
