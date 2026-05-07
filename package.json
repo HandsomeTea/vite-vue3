@@ -65,6 +65,7 @@
 		"postcss-preset-env": "^11.2.1",
 		"prettier": "3.8.3",
 		"rollup-plugin-visualizer": "^7.0.1",
+		"tailwindcss": "^4.2.4",
 		"typescript": "~6.0.0",
 		"unplugin-auto-import": "^21.0.0",
 		"unplugin-vue-components": "^32.0.0",
