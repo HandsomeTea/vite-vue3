@@ -1,0 +1,9 @@
+/* @import 须在最前（PostCSS）；@config 紧跟其后由 Tailwind 处理 */
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+
+@config "../../../tailwind.config.js";
+
+@layer theme {
+	--preflight: false;
+}

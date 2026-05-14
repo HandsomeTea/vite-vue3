@@ -3,10 +3,7 @@ import { UserConfig } from 'vite';
 export default {
 	mode: 'development',
 	define: {
-		__APP_VERSION__: JSON.stringify('v1'),
-		'process.env': {
-			NODE_ENV: 'development'
-		}
+		__APP_VERSION__: JSON.stringify('v1')
 	},
 	logLevel: 'info',
 	clearScreen: false,

@@ -1,2 +1,2 @@
 import './default.less';
-import './tailwind.less';
+import './tailwind-app.css';

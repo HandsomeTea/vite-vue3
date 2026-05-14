@@ -1,17 +1,21 @@
 version: "3.8"
 services:
     vite-vue3:
-        image: node:20.11.1
+        image: node:24.15.0
         restart: always
         container_name: vite-vue3
-        ports:
-            - 3000:3000
+        network_mode: host
+        working_dir: /usr/src/app
         volumes:
+            # 相对本 compose 文件所在目录，挂载仓库根目录
             - ../:/usr/src/app
         command:
             - sh
             - -c
             - |
-                cd /usr/src/app
-                [ ! -d "/usr/src/app/node_modules" ] && npm install
-                npm run start
+                corepack enable
+                corepack install
+                if [ ! -d "/usr/src/app/node_modules" ]; then
+                  pnpm install --frozen-lockfile
+                fi
+                pnpm run dev

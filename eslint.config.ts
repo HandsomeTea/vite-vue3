@@ -40,7 +40,7 @@ export default defineConfigWithVueTs(
 			'@typescript-eslint/no-explicit-any': 2,
 			'@typescript-eslint/no-inferrable-types': 2,
 			indent: [2, 'tab'],
-			'linebreak-style': [0, 'error', 'windows', 'unix'],
+			'linebreak-style': 'off',
 			'arrow-parens': ['error', 'as-needed'],
 			'no-useless-rename': 'error',
 			quotes: [2, 'single'],
@@ -70,12 +70,12 @@ export default defineConfigWithVueTs(
 			'no-sparse-arrays': 2,
 			'no-unreachable': 2,
 			'no-unused-expressions': 2,
-			'no-unused-vars': ['error', {
-				'argsIgnorePattern': '^_',
-				'varsIgnorePattern': '^_',
-				'caughtErrorsIgnorePattern': '^_'
+			'no-unused-vars': 'off',
+			'@typescript-eslint/no-unused-vars': ['error', {
+				argsIgnorePattern: '^_',
+				varsIgnorePattern: '^_',
+				caughtErrorsIgnorePattern: '^_'
 			}],
-			'@typescript-eslint/no-unused-vars': 2,
 			'no-use-before-define': 2,
 			'no-extra-boolean-cast': 2,
 			'no-void': 2,
@@ -103,7 +103,14 @@ export default defineConfigWithVueTs(
 			'require-atomic-updates': 'off'
 		}
 	},
-	globalIgnores(['**/dist/**', '**/dist-ssr/**', '**/coverage/**']),
+	globalIgnores([
+		'**/dist/**',
+		'**/dist-ssr/**',
+		'**/coverage/**',
+		'**/node_modules/**',
+		'auto-imports.d.ts',
+		'components.d.ts'
+	]),
 
 	...pluginVue.configs['flat/essential'],
 	vueTsConfigs.recommended,

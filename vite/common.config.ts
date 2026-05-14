@@ -4,7 +4,6 @@ import vue from '@vitejs/plugin-vue';
 import vueDevTools from 'vite-plugin-vue-devtools';
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import postcssPresetEnv from 'postcss-preset-env';
-import { visualizer } from 'rollup-plugin-visualizer';
 import path from 'path';
 import AutoImport from 'unplugin-auto-import/vite';
 import Components from 'unplugin-vue-components/vite';
@@ -41,12 +40,6 @@ export default {
 				}
 			],
 			dts: path.join(__dirname, '../components.d.ts')
-		}),
-		visualizer({
-			// open: true,
-			filename: 'static-analysis.html',
-			gzipSize: true,
-			brotliSize: true
 		})
 	],
 	// 默认也为public目录
