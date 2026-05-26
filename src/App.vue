@@ -16,7 +16,7 @@ import enUS from '@arco-design/web-vue/es/locale/lang/en-us';
 import type { ArcoLang } from '@arco-design/web-vue/es/locale/interface';
 
 const languageMap: Record<SupportLanguageType, ArcoLang> = {
-	'en': enUS,
+	en: enUS,
 	'zh-cn': zhCN
 };
 const language = getLang();

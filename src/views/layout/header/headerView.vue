@@ -3,9 +3,7 @@
 		<template #title>
 			<breadcrumb />
 		</template>
-		<template #subtitle>
-			模型转换
-		</template>
+		<template #subtitle> 模型转换 </template>
 		<template #extra>
 			<avatar />
 		</template>

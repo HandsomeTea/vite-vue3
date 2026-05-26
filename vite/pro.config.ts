@@ -51,7 +51,7 @@ export default {
 				entryFileNames: 'js/[name]-[hash:16].js',
 				// 用于命名代码拆分时创建的共享块的输出命名
 				chunkFileNames: 'js/[name]-[hash:10].js',
-				assetFileNames: (chunkInfo) => {
+				assetFileNames: chunkInfo => {
 					if (
 						chunkInfo.name?.endsWith('.webm') ||
 						chunkInfo.name?.endsWith('.png') ||
@@ -65,7 +65,7 @@ export default {
 					}
 
 					return '[ext]/[name].[hash].[ext]';
-				},
+				}
 				// 拆分js到模块文件夹，同一个模块的会合并到一起
 				// chunkFileNames: (chunkInfo) => {
 				// 	const facadeModuleId = chunkInfo.facadeModuleId ? chunkInfo.facadeModuleId.split('/') : [];
@@ -76,7 +76,7 @@ export default {
 			}
 		},
 		esbuild: {
-			drop: ['console', 'debugger'], // 生产环境移除 console 和 debugger
+			drop: ['console', 'debugger'] // 生产环境移除 console 和 debugger
 		}
 		// 图片从别的地址加载
 		// experimental: {

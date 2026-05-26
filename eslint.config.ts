@@ -1,8 +1,8 @@
-import { globalIgnores } from 'eslint/config'
-import { defineConfigWithVueTs, vueTsConfigs } from '@vue/eslint-config-typescript'
-import pluginVue from 'eslint-plugin-vue'
-import pluginOxlint from 'eslint-plugin-oxlint'
-import skipFormatting from 'eslint-config-prettier/flat'
+import { globalIgnores } from 'eslint/config';
+import { defineConfigWithVueTs, vueTsConfigs } from '@vue/eslint-config-typescript';
+import pluginVue from 'eslint-plugin-vue';
+import pluginOxlint from 'eslint-plugin-oxlint';
+import skipFormatting from 'eslint-config-prettier/flat';
 import globals from 'globals';
 
 // To allow more languages other than `ts` in `.vue` files, uncomment the following lines:
@@ -13,7 +13,7 @@ import globals from 'globals';
 export default defineConfigWithVueTs(
 	{
 		name: 'app/files-to-lint',
-		files: ['**/*.{vue,ts,mts,tsx}'],
+		files: ['**/*.{vue,ts,mts,tsx}']
 	},
 	{
 		languageOptions: {
@@ -32,11 +32,14 @@ export default defineConfigWithVueTs(
 		rules: {
 			'vue/multi-word-component-names': 0,
 			'vue/html-indent': ['error', 'tab'],
-			'vue/max-attributes-per-line': [2, {
-				'singleline': {
-					max: 3
+			'vue/max-attributes-per-line': [
+				2,
+				{
+					singleline: {
+						max: 3
+					}
 				}
-			}],
+			],
 			'@typescript-eslint/no-explicit-any': 2,
 			'@typescript-eslint/no-inferrable-types': 2,
 			indent: [2, 'tab'],
@@ -50,11 +53,15 @@ export default defineConfigWithVueTs(
 			'no-multiple-empty-lines': [2, { max: 2 }],
 			'no-console': 2,
 			'no-constant-condition': 2,
-			'no-extra-parens': ['error', 'all', {
-				ignoreJSX: 'all',               // 忽略 Vue/JSX 模板中的括号
-				nestedBinaryExpressions: false, // 允许在复杂的 a + (b * c) 中保留括号以利于阅读
-				enforceForArrowConditionals: false
-			}],
+			'no-extra-parens': [
+				'error',
+				'all',
+				{
+					ignoreJSX: 'all', // 忽略 Vue/JSX 模板中的括号
+					nestedBinaryExpressions: false, // 允许在复杂的 a + (b * c) 中保留括号以利于阅读
+					enforceForArrowConditionals: false
+				}
+			],
 			'no-extra-semi': 2,
 			'no-func-assign': 2,
 			'no-mixed-spaces-and-tabs': [2, false],
@@ -71,11 +78,14 @@ export default defineConfigWithVueTs(
 			'no-unreachable': 2,
 			'no-unused-expressions': 2,
 			'no-unused-vars': 'off',
-			'@typescript-eslint/no-unused-vars': ['error', {
-				argsIgnorePattern: '^_',
-				varsIgnorePattern: '^_',
-				caughtErrorsIgnorePattern: '^_'
-			}],
+			'@typescript-eslint/no-unused-vars': [
+				'error',
+				{
+					argsIgnorePattern: '^_',
+					varsIgnorePattern: '^_',
+					caughtErrorsIgnorePattern: '^_'
+				}
+			],
 			'no-use-before-define': 2,
 			'no-extra-boolean-cast': 2,
 			'no-void': 2,
@@ -117,5 +127,5 @@ export default defineConfigWithVueTs(
 
 	...pluginOxlint.buildFromOxlintConfigFile('.oxlintrc.json'),
 
-	skipFormatting,
-)
+	skipFormatting
+);

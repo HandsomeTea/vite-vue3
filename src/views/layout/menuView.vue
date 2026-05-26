@@ -1,7 +1,16 @@
 <template>
-	<a-menu theme="dark" breakpoint="xl" v-model:selected-keys="activeMenu"
-		:default-selected-keys="[`/${$route.path.split('/')[1]}`]" :collapsed="isHideMenu" show-collapse-button
-		auto-open-selected class="layout_menu" @collapse="toogleMenu" @menu-item-click="changeRoute">
+	<a-menu
+		theme="dark"
+		breakpoint="xl"
+		v-model:selected-keys="activeMenu"
+		:default-selected-keys="[`/${$route.path.split('/')[1]}`]"
+		:collapsed="isHideMenu"
+		show-collapse-button
+		auto-open-selected
+		class="layout_menu"
+		@collapse="toogleMenu"
+		@menu-item-click="changeRoute"
+	>
 		<a-menu-item key="index">
 			<template #icon>
 				<icon-home />
@@ -27,9 +36,13 @@ import router from '@/router';
 const isHideMenu = getMenuStatus();
 const activeMenu = ref([router.currentRoute.value.matched[1]?.meta.page]);
 
-watch(() => router.currentRoute.value, () => {
-	activeMenu.value = [router.currentRoute.value.matched[1]?.meta.page];
-}, { immediate: true, deep: true });
+watch(
+	() => router.currentRoute.value,
+	() => {
+		activeMenu.value = [router.currentRoute.value.matched[1]?.meta.page];
+	},
+	{ immediate: true, deep: true }
+);
 
 const changeRoute = (page: string) => {
 	const route = router.getRoutes().find(a => a.meta.page === page);
@@ -38,7 +51,6 @@ const changeRoute = (page: string) => {
 		redirectTo(route.path);
 	}
 };
-
 </script>
 
 <style lang="less" scoped>

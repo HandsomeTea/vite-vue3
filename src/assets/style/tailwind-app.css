@@ -3,7 +3,3 @@
 @import 'tailwindcss/utilities.css' layer(utilities);
 
 @config "../../../tailwind.config.js";
-
-@layer theme {
-	--preflight: false;
-}

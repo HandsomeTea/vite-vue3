@@ -36,7 +36,6 @@ const testApi = async () => {
 	// console.log(data);
 };
 const language = getLang();
-
 </script>
 
 <style lang="less" scoped>

@@ -21,7 +21,7 @@ export default {
 			'^/fallback/.*': {
 				target: 'http://jsonplaceholder.typicode.com',
 				changeOrigin: true,
-				rewrite: (path) => path.replace(/^\/fallback/, '')
+				rewrite: path => path.replace(/^\/fallback/, '')
 			},
 			'/apis': {
 				target: 'http://jsonplaceholder.typicode.com',

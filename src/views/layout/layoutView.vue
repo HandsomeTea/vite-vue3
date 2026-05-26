@@ -1,17 +1,22 @@
 <template>
-	<a-row class="app-container">
-		<a-col :flex="isHideMenu ? '48px' : '220px'" class="app-aside">
+	<div class="app-container">
+		<div :style="{ width: isHideMenu ? '48px' : '220px' }" class="app-aside float-left">
 			<Logo />
 			<Navigation />
-		</a-col>
-		<a-col flex="auto" class="app-content">
+		</div>
+		<div
+			:style="{ width: isHideMenu ? 'calc(100% - 49px)' : 'calc(100% - 221px)' }"
+			class="app-content float-left h-full"
+		>
 			<page-header />
-			<div
-				class="view-main p-0 my-[16px] mx-[20px] w-[calc(100%-40px)] max-h-[calc(100%-77px)] overflow-auto rounded-[6px]">
-				<router-view />
+
+			<div class="overflow-auto p-[16px] w-[calc(100%-32px)] h-[calc(100%-77px)]">
+				<div class="app-main p-[10px] w-[calc(100%-20px)] rounded-[6px]">
+					<router-view />
+				</div>
 			</div>
-		</a-col>
-	</a-row>
+		</div>
+	</div>
 </template>
 
 <script setup lang="ts">
@@ -21,7 +26,6 @@ import Logo from './logoView.vue';
 import pageHeader from './header/headerView.vue';
 
 const isHideMenu = getMenuStatus();
-
 </script>
 
 <style lang="less">
@@ -53,11 +57,12 @@ const isHideMenu = getMenuStatus();
 	overflow: auto;
 	border-radius: 0;
 	box-shadow: none;
-	height: 100%;
 }
 
-.view-main {
+.app-main {
 	background-color: #fff;
-	box-shadow: 0 4px 6px 0px rgba(0, 0, 0, 0.1), 0px -1px 6px -2px rgba(0, 0, 0, 0.1);
+	box-shadow:
+		0 4px 6px 0px rgba(0, 0, 0, 0.1),
+		0px -1px 6px -2px rgba(0, 0, 0, 0.1);
 }
 </style>

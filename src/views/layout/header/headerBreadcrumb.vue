@@ -1,9 +1,11 @@
 <template>
 	<a-breadcrumb separator="/">
 		<template v-for="(navigate, i) in navigateData">
-			<a-breadcrumb-item v-if="i <= 1 && ((isHideMenu && platform === 'phone') || platform !== 'phone')"
+			<a-breadcrumb-item
+				v-if="i <= 1 && ((isHideMenu && platform === 'phone') || platform !== 'phone')"
 				:key="i + '1'"
-				@click="navigate.path && navigate.path !== $route.path ? redirectTo(navigate.path) : null">
+				@click="navigate.path && navigate.path !== $route.path ? redirectTo(navigate.path) : null"
+			>
 				{{ $t(navigate.nameI18n) }}
 			</a-breadcrumb-item>
 			<a-breadcrumb-item v-if="i > 1" :key="i + '2'">
@@ -48,5 +50,4 @@ watch(
 );
 const isHideMenu = getMenuStatus();
 const platform = getScreenSize();
-
 </script>
