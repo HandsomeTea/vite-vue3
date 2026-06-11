@@ -28,6 +28,11 @@ const routes: Array<RouteRecordRaw> = [
 						component: () => import('../views/testEdit.vue')
 					}
 				]
+			},
+			{
+				path: '/chart',
+				meta: { i18nNavigateName: 'vueflow', i18nNavigateGroupName: '图表', page: 'chart-vueflow' },
+				component: () => import('../views/chart/vueflow/pipelineView.vue')
 			}
 		]
 	}

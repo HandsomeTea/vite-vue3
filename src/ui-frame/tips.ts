@@ -1,3 +1,6 @@
+import '@arco-design/web-vue/es/message/style/index.css';
+import '@arco-design/web-vue/es/modal/style/index.css';
+import '@arco-design/web-vue/es/notification/style/index.css';
 import { Message, Modal, Notification } from '@arco-design/web-vue';
 import i18n from '@/lang';
 

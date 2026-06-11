@@ -26,6 +26,7 @@ import Logo from './logoView.vue';
 import pageHeader from './header/headerView.vue';
 
 const isHideMenu = getMenuStatus();
+
 </script>
 
 <style lang="less">

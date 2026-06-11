@@ -50,4 +50,5 @@ watch(
 );
 const isHideMenu = getMenuStatus();
 const platform = getScreenSize();
+
 </script>

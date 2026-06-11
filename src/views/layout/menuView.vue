@@ -25,6 +25,14 @@
 			<template #title> 测试组 </template>
 			<a-menu-item key="test"> 测试 </a-menu-item>
 		</a-sub-menu>
+
+		<a-sub-menu>
+			<template #icon>
+				<icon-download />
+			</template>
+			<template #title> 图表 </template>
+			<a-menu-item key="chart-vueflow"> vueflow </a-menu-item>
+		</a-sub-menu>
 	</a-menu>
 </template>
 
@@ -51,6 +59,7 @@ const changeRoute = (page: string) => {
 		redirectTo(route.path);
 	}
 };
+
 </script>
 
 <style lang="less" scoped>
