@@ -19,6 +19,9 @@
 			:min-zoom="0.2"
 			:max-zoom="4"
 			:connection-mode="ConnectionMode.Loose"
+			:nodes-connectable="!props.showMode"
+			:delete-key-code="!props.showMode ? 'Backspace' : null"
+			:multi-selection-key-code="!props.showMode ? 'Control' : null"
 		>
 			<template #node-default="nodeProps">
 				<base-node v-bind="nodeProps" :node-config-list="props.nodeConfigList" />
@@ -30,62 +33,66 @@
 
 			<background :gap="20" :size="0.5" />
 
-			<Controls :show-zoom="false" :show-fit-view="false" position="top-left">
+			<Controls :show-zoom="false" :show-fit-view="false" :show-interactive="!props.showMode" position="top-left">
 				<ControlButton title="整理布局" @click="handleLayout">
 					<icon-dice class="max-w-[14px] max-h-[14px]" />
 				</ControlButton>
 
-				<ControlButton v-if="nodesDraggable" title="添加节点" @click="toAddNode">
-					<icon-plus class="max-w-[14px] max-h-[14px]" />
-				</ControlButton>
-
-				<ControlButton
-					v-if="nodesDraggable && getSelectedNodes.length + getSelectedEdges.length === 1"
-					title="编辑选中"
-					@click="toEdit('view')"
-				>
-					<icon-edit class="max-w-[14px] max-h-[14px]" />
-				</ControlButton>
-
-				<ControlButton
-					v-if="nodesDraggable && (getSelectedNodes.length > 0 || getSelectedEdges.length > 0)"
-					title="删除选中"
-					@click="toDelete('view')"
-				>
-					<icon-delete class="max-w-[14px] max-h-[14px] text-red-500" />
-				</ControlButton>
-
-				<a-tooltip position="bottom">
-					<template #content>
-						<p>右键操作：</p>
-						<ul class="pl-[24px]">
-							<li>1. 右键点击空白处：添加节点。</li>
-							<li>2. 右键点击节点/连线：编辑/删除节点或连线。</li>
-						</ul>
-						<p class="mt-[10px]">点击操作：</p>
-						<ul class="pl-[24px]">
-							<li>1. 单击节点/连线：选中元素。</li>
-							<li>2. 按住 Ctrl + 单击节点/连线：多选元素。</li>
-						</ul>
-						<p class="mt-[10px]">按键操作：</p>
-						<ul class="pl-[24px]">
-							<li>1. 删除节点/连线：选中要删除的节点/连线，按退格键可删除选中元素。</li>
-						</ul>
-						<p class="mt-[10px]">连线操作：</p>
-						<ul class="pl-[24px]">
-							<li>1. 节点的左右边框中段在鼠标靠近时会显示连接点，拖拽连接点至其他连接点可以创建连线。</li>
-							<li>2. 连线后，连线的连接点会自动调整。</li>
-							<li>
-								3.
-								一般认为，节点右侧的连接点为源连接点，左侧的连接点为目标连接点，即从A到B的连线，应该是从A节点的右侧连接点连接到B节点的左侧连接点。
-							</li>
-						</ul>
-					</template>
-
-					<ControlButton>
-						<icon-question-circle class="max-w-[14px] max-h-[14px]" />
+				<template v-if="!props.showMode">
+					<ControlButton v-if="nodesDraggable" title="添加节点" @click="toAddNode">
+						<icon-plus class="max-w-[14px] max-h-[14px]" />
 					</ControlButton>
-				</a-tooltip>
+
+					<ControlButton
+						v-if="nodesDraggable && getSelectedNodes.length + getSelectedEdges.length === 1"
+						title="编辑选中"
+						@click="toEdit('view')"
+					>
+						<icon-edit class="max-w-[14px] max-h-[14px]" />
+					</ControlButton>
+
+					<ControlButton
+						v-if="nodesDraggable && (getSelectedNodes.length > 0 || getSelectedEdges.length > 0)"
+						title="删除选中"
+						@click="deleteSelectedEles('view')"
+					>
+						<icon-delete class="max-w-[14px] max-h-[14px] text-red-500" />
+					</ControlButton>
+
+					<a-tooltip position="bottom">
+						<template #content>
+							<p>右键操作：</p>
+							<ul class="pl-[24px]">
+								<li>1. 右键点击空白处：添加节点。</li>
+								<li>2. 右键点击节点/连线：编辑/删除节点或连线。</li>
+							</ul>
+							<p class="mt-[10px]">点击操作：</p>
+							<ul class="pl-[24px]">
+								<li>1. 单击节点/连线：选中元素。</li>
+								<li>2. 按住 Ctrl + 单击节点/连线：多选元素。</li>
+							</ul>
+							<p class="mt-[10px]">按键操作：</p>
+							<ul class="pl-[24px]">
+								<li>1. 删除节点/连线：选中要删除的节点/连线，按退格键可删除选中元素。</li>
+							</ul>
+							<p class="mt-[10px]">连线操作：</p>
+							<ul class="pl-[24px]">
+								<li>
+									1. 节点的左右边框中段在鼠标靠近时会显示连接点，拖拽连接点至其他连接点可以创建连线。
+								</li>
+								<li>2. 连线后，连线的连接点会自动调整。</li>
+								<li>
+									3.
+									一般认为，节点右侧的连接点为源连接点，左侧的连接点为目标连接点，即从A到B的连线，应该是从A节点的右侧连接点连接到B节点的左侧连接点。
+								</li>
+							</ul>
+						</template>
+
+						<ControlButton>
+							<icon-question-circle class="max-w-[14px] max-h-[14px]" />
+						</ControlButton>
+					</a-tooltip>
+				</template>
 			</Controls>
 		</vue-flow>
 
@@ -100,7 +107,7 @@
 			</div>
 			<template v-else>
 				<div class="menu-item" @click="toEdit('contextmenu')"><icon-edit class="mr-[6px]" /> 编辑</div>
-				<div class="menu-item delete" @click="toDelete('contextmenu')">
+				<div class="menu-item delete" @click="deleteSelectedEles('contextmenu')">
 					<icon-delete class="mr-[6px]" /> 删除
 				</div>
 			</template>
@@ -112,9 +119,9 @@
 	setup
 	lang="ts"
 	generic="
-		NodeType extends string,
-		NodeData extends object & { label: string; type: NodeType },
-		EdgeData extends object & { status?: 'running' | 'failed' | 'success' }
+		ChartNodeType extends string,
+		ChartNodeData extends object & { label: string; type: ChartNodeType },
+		ChartEdgeData extends object & { status?: 'running' | 'failed' | 'success'; label?: string }
 	"
 >
 import { nextTick, onMounted, onUnmounted, provide, reactive } from 'vue';
@@ -131,11 +138,12 @@ import BaseNode from './baseNode.vue';
 import { EDGE_HANDLE_ID } from './lib.ts';
 
 interface ChartProps {
+	showMode?: boolean;
 	nodeConfigList: Record<
-		NodeType,
+		ChartNodeType,
 		{
-			label: string;
-			sourceNode: Array<NodeType>;
+			name: string;
+			sourceNode: Array<ChartNodeType>;
 			color: string;
 			svg: string;
 		}
@@ -147,8 +155,9 @@ const emit = defineEmits<{
 	(event: 'to-add-node'): void;
 	(
 		event: 'to-edit',
-		eleInfo: { type: 'node'; id: string; data?: NodeData } | { type: 'edge'; id: string; data?: EdgeData }
+		eleInfo: { type: 'node'; id: string; data?: ChartNodeData } | { type: 'edge'; id: string; data?: ChartEdgeData }
 	): void;
+	(event: 'click-node', node: { id: string; data: ChartNodeData }): void;
 }>();
 const contextMenu = reactive({
 	show: false,
@@ -181,6 +190,9 @@ const closeContextMenu = () => {
 	contextMenu.show = false;
 };
 const toAddNode = () => {
+	if (props.showMode) {
+		return;
+	}
 	emit('to-add-node');
 	closeContextMenu();
 };
@@ -213,7 +225,7 @@ const toEdit = (from: 'contextmenu' | 'view') => {
 	});
 	closeContextMenu();
 };
-const toDelete = async (from: 'contextmenu' | 'view') => {
+const deleteSelectedEles = async (from: 'contextmenu' | 'view') => {
 	let eleIds: Array<{ type: 'node' | 'edge'; id: string }> = [];
 
 	if (from === 'view') {
@@ -285,7 +297,7 @@ const handleLayout = () => {
 		fitView({ padding: 0.2 });
 	});
 };
-const _addNodes = (nodes: Array<{ id: string; data: NodeData }>) =>
+const _addNodes = (nodes: Array<{ id: string; data: ChartNodeData }>) =>
 	addNodes(
 		nodes.map(s => ({
 			...s,
@@ -295,17 +307,21 @@ const _addNodes = (nodes: Array<{ id: string; data: NodeData }>) =>
 			}
 		}))
 	);
-// const addEdge = (edge: { source: string; target: string; data: EdgeData }) => addEdges([{ ...edge, type: 'default' }]);
-const _updateNodeData = (nodeId: string, data: Partial<NodeData>) => updateNodeData(nodeId, data);
-const _updateEdgeData = (edgeId: string, data: Partial<EdgeData>) => updateEdgeData(edgeId, data);
+const addEdge = (edge: { source: string; target: string; animated?: boolean; data: ChartEdgeData }) =>
+	addEdges([{ ...edge, type: 'default' }]);
+const _updateNodeData = (nodeId: string, data: Partial<ChartNodeData>) => updateNodeData(nodeId, data);
+const _updateEdgeData = (edgeId: string, data: Partial<ChartEdgeData>) => updateEdgeData(edgeId, data);
 
 defineExpose({
 	addNodes: _addNodes,
-	// addEdge,
+	addEdge,
 	updateNodeData: _updateNodeData,
 	updateEdgeData: _updateEdgeData
 });
 const handleGlobalContextMenu = (e: MouseEvent) => {
+	if (props.showMode) {
+		return;
+	}
 	e.preventDefault();
 	e.stopPropagation();
 
@@ -365,6 +381,15 @@ const onNodeClick = (event: NodeMouseEvent) => {
 
 		removeSelectedNodes(otherNodes);
 	}
+	emit(
+		'click-node',
+		JSON.parse(
+			JSON.stringify({
+				id: event.node.id,
+				data: event.node.data
+			})
+		)
+	);
 };
 const checkWillFormCycle = (source: string, target: string): { validated: boolean; message: string } => {
 	const visited = new Set<string>();
@@ -400,8 +425,8 @@ const onConnectValidate = (connection: Connection): { validated: boolean; messag
 
 	if (!sourceNode || !targetNode) return { validated: false, message: '节点不存在' };
 
-	const sourceType = (sourceNode.data?.type || sourceNode.type) as NodeType;
-	const targetType = (targetNode.data?.type || targetNode.type) as NodeType;
+	const sourceType = (sourceNode.data?.type || sourceNode.type) as ChartNodeType;
+	const targetType = (targetNode.data?.type || targetNode.type) as ChartNodeType;
 
 	// 1. 验证流水线准入层
 	const allowedUpperTypes = props.nodeConfigList[targetType].sourceNode || [];

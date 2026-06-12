@@ -84,11 +84,12 @@ export const EDGE_HANDLE_ID = {
 	SOURCE_RIGHT: 's-r'
 };
 export interface ChartExpose<
-	NodeType extends string,
-	NodeData extends object & { label: string; type: NodeType },
-	EdgeData extends object & { status?: 'running' | 'failed' | 'success' }
+	ExposeNodeType extends string,
+	ExposeNodeData extends object & { label: string; type: ExposeNodeType },
+	ExposeEdgeData extends object & { status?: 'running' | 'failed' | 'success'; label?: string }
 > {
-	addNodes: (nodes: Array<{ id: string; data: NodeData }>) => void;
-	updateNodeData: (nodeId: string, data: Partial<NodeData>) => void;
-	updateEdgeData: (edgeId: string, data: Partial<EdgeData>) => void;
+	addNodes: (nodes: Array<{ id: string; data: ExposeNodeData }>) => void;
+	addEdge: (edge: { source: string; target: string; animated?: boolean; data: ExposeEdgeData }) => void;
+	updateNodeData: (nodeId: string, data: Partial<ExposeNodeData>) => void;
+	updateEdgeData: (edgeId: string, data: Partial<ExposeEdgeData>) => void;
 }

@@ -108,22 +108,29 @@ onMounted(async () => {
 			{ id: 'e', data: { label: '模型评测 E', type: 'evaluate' } },
 			{ id: 'f', data: { label: '结果展示 F', type: 'result' } }
 		]);
-		// chartRef.value.addEdge({
-		// 	source: 'a',
-		// 	target: 'b',
-		// 	// animated: true,
-		// 	data: {
-		// 		label: '触发训练'
-		// 		// status: 'running'
-		// 	}
-		// });
+		chartRef.value.addEdge({
+			source: 'a',
+			target: 'b',
+			// animated: true,
+			data: {
+				// label: '触发训练'
+				// status: 'running'
+			}
+		});
 	}
 });
 </script>
 
 <template>
 	<div class="pipeline-container">
-		<chart ref="chartRef" :node-config-list="NODE_CONFIGS" @to-add-node="handleAddNode" @to-edit="handleEdit" />
+		<chart
+			ref="chartRef"
+			:node-config-list="NODE_CONFIGS"
+			:show-mode="false"
+			@to-add-node="handleAddNode"
+			@to-edit="handleEdit"
+			@click-node="nodeData => console.log('click-node', nodeData)"
+		/>
 
 		<a-modal v-model:visible="showModal" :title="isEdit ? '编辑节点' : '添加节点'" @ok="handleModalOk">
 			<a-form :model="nodeForm">

@@ -15,7 +15,7 @@
 			:style="{ color: theme.primary }"
 		>
 			<span v-if="nodeConfig?.svg" v-html="nodeConfig.svg" class="inline-flex mr-[2px]" />
-			{{ nodeConfig?.label }}
+			{{ nodeConfig?.name }}
 		</p>
 		<div :class="['mt-1 px-3 py-1 text-[12px]', selected ? 'text-gray-700' : 'text-gray-500']">
 			{{ props.data.label }}
@@ -37,7 +37,7 @@ const props = defineProps<{
 	nodeConfigList: Record<
 		string,
 		{
-			label: string;
+			name: string;
 			sourceNode: Array<string>;
 			color: string;
 			svg: string;
