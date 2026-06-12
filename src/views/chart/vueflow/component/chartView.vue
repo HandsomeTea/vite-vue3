@@ -297,7 +297,10 @@ const handleLayout = () => {
 		fitView({ padding: 0.2 });
 	});
 };
-const _addNodes = (nodes: Array<{ id: string; data: ChartNodeData }>) =>
+const _addNodes = (nodes: Array<{ id: string; data: ChartNodeData }>) => {
+	if (props.showMode) {
+		return;
+	}
 	addNodes(
 		nodes.map(s => ({
 			...s,
@@ -307,10 +310,27 @@ const _addNodes = (nodes: Array<{ id: string; data: ChartNodeData }>) =>
 			}
 		}))
 	);
-const addEdge = (edge: { source: string; target: string; animated?: boolean; data: ChartEdgeData }) =>
+};
+
+const addEdge = (edge: { source: string; target: string; animated?: boolean; data: ChartEdgeData }) => {
+	if (props.showMode) {
+		return;
+	}
 	addEdges([{ ...edge, type: 'default' }]);
-const _updateNodeData = (nodeId: string, data: Partial<ChartNodeData>) => updateNodeData(nodeId, data);
-const _updateEdgeData = (edgeId: string, data: Partial<ChartEdgeData>) => updateEdgeData(edgeId, data);
+};
+
+const _updateNodeData = (nodeId: string, data: Partial<ChartNodeData>) => {
+	if (props.showMode) {
+		return;
+	}
+	updateNodeData(nodeId, data);
+};
+const _updateEdgeData = (edgeId: string, data: Partial<ChartEdgeData>) => {
+	if (props.showMode) {
+		return;
+	}
+	updateEdgeData(edgeId, data);
+};
 
 defineExpose({
 	addNodes: _addNodes,
