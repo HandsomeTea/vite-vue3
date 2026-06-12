@@ -8,12 +8,12 @@ import Chart from './component/chartView.vue';
 const chartRef = ref<ChartExpose<NodeType, NodeData, EdgeData> | null>(null);
 
 const NODE_TYPES: Array<{ value: NodeType; label: string }> = [
-	{ value: 'origin', label: NODE_CONFIGS['origin'].label },
-	{ value: 'compile', label: NODE_CONFIGS['compile'].label },
-	{ value: 'evaluate', label: NODE_CONFIGS['evaluate'].label },
-	{ value: 'convert', label: NODE_CONFIGS['convert'].label },
-	{ value: 'train', label: NODE_CONFIGS['train'].label },
-	{ value: 'result', label: NODE_CONFIGS['result'].label }
+	{ value: 'origin', label: NODE_CONFIGS['origin'].name },
+	{ value: 'compile', label: NODE_CONFIGS['compile'].name },
+	{ value: 'evaluate', label: NODE_CONFIGS['evaluate'].name },
+	{ value: 'convert', label: NODE_CONFIGS['convert'].name },
+	{ value: 'train', label: NODE_CONFIGS['train'].name },
+	{ value: 'result', label: NODE_CONFIGS['result'].name }
 ];
 
 const showModal = ref(false);
