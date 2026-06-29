@@ -13,25 +13,44 @@
 			@node-click="onNodeClick"
 			@edge-click="closeContextMenu()"
 			@connect="handleConnect"
+			@connect-start="
+				e => {
+					connectingStartNode.id = e.nodeId || '';
+					connectingStartNode.position = e.handleType || '';
+				}
+			"
+			@connect-end="
+				connectingStartNode.id = '';
+				connectingStartNode.position = '';
+			"
 			:fit-view="true"
 			:select-nodes-on-drag="false"
+			:snap-to-grid="true"
+			:snap-grid="[20, 20]"
 			:default-viewport="{ zoom: 1 }"
-			:min-zoom="0.2"
-			:max-zoom="4"
+			:min-zoom="0.6"
+			:max-zoom="1.4"
+			:zoom-on-scroll="false"
+			:pan-on-drag="false"
+			:zoom-on-pinch="false"
 			:connection-mode="ConnectionMode.Loose"
 			:nodes-connectable="!props.showMode"
 			:delete-key-code="!props.showMode ? 'Backspace' : null"
 			:multi-selection-key-code="!props.showMode ? 'Control' : null"
 		>
 			<template #node-default="nodeProps">
-				<base-node v-bind="nodeProps" :node-config-list="props.nodeConfigList" />
+				<base-node
+					v-bind="nodeProps"
+					:node-config-list="props.nodeConfigList"
+					:connecting-start-node="connectingStartNode"
+				/>
 			</template>
 
 			<template #edge-default="edgeProps">
 				<base-edge v-bind="edgeProps" />
 			</template>
 
-			<background :gap="20" :size="0.5" />
+			<background :gap="20" :size="0.5" variant="lines" pattern-color="rgba(0, 0, 0, 0.03)" />
 
 			<Controls :show-zoom="false" :show-fit-view="false" :show-interactive="!props.showMode" position="top-left">
 				<ControlButton title="整理布局" @click="handleLayout">
@@ -124,7 +143,7 @@
 		ChartEdgeData extends object & { status?: 'running' | 'failed' | 'success'; label?: string }
 	"
 >
-import { nextTick, onMounted, onUnmounted, provide, reactive } from 'vue';
+import { nextTick, onMounted, onUnmounted, provide, reactive, ref } from 'vue';
 import { ConnectionMode, useVueFlow, VueFlow, type Connection, type NodeMouseEvent } from '@vue-flow/core';
 import dagre from 'dagre';
 import { Background } from '@vue-flow/background';
@@ -165,12 +184,17 @@ const contextMenu = reactive({
 	y: 0,
 	target: { id: '', type: 'pane' as 'pane' | 'node' | 'edge' }
 });
+const connectingStartNode = ref<{ position: '' | 'source' | 'target'; id: string }>({
+	position: '',
+	id: ''
+});
 const {
 	getEdges,
 	getNodes,
 	getSelectedNodes,
 	getSelectedEdges,
 	nodesDraggable,
+	project,
 	fitView,
 	onPaneReady,
 	removeSelectedNodes,
@@ -301,13 +325,11 @@ const _addNodes = (nodes: Array<{ id: string; data: ChartNodeData }>) => {
 	if (props.showMode) {
 		return;
 	}
+
 	addNodes(
 		nodes.map(s => ({
 			...s,
-			position: {
-				x: 120,
-				y: 120
-			}
+			position: project({ x: 80, y: 20 })
 		}))
 	);
 };
@@ -316,7 +338,17 @@ const addEdge = (edge: { source: string; target: string; animated?: boolean; dat
 	if (props.showMode) {
 		return;
 	}
-	addEdges([{ ...edge, type: 'default' }]);
+	const id = `edge_${edge.source}_to_${edge.target}_${Date.now()}`;
+
+	addEdges([
+		{
+			id,
+			...edge,
+			sourceHandle: EDGE_HANDLE_ID.SOURCE_RIGHT,
+			targetHandle: EDGE_HANDLE_ID.TARGET_LEFT,
+			type: 'default'
+		}
+	]);
 };
 
 const _updateNodeData = (nodeId: string, data: Partial<ChartNodeData>) => {
@@ -483,7 +515,7 @@ const handleConnect = (connection: Connection) => {
 		sourceHandle: EDGE_HANDLE_ID.SOURCE_RIGHT,
 		targetHandle: EDGE_HANDLE_ID.TARGET_LEFT,
 		type: 'default',
-		data: { label: '新依赖' }
+		data: { label: '' }
 	});
 
 	Tips.success('连线创建成功');
@@ -549,53 +581,59 @@ onUnmounted(() => {
 }
 
 :deep(.vue-flow__handle) {
-	cursor: crosshair !important;
+	cursor: crosshair;
 	z-index: 10;
-	border-radius: 50% !important;
-	width: 8px !important;
-	height: 8px !important;
-	box-sizing: border-box !important;
-	border: 2px solid #fff !important;
+	border-radius: 50%;
+	width: 8px;
+	height: 8px;
+	box-sizing: border-box;
+	border: 2px solid #fff;
 	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
 	opacity: 0;
 	transition:
 		transform 0.15s cubic-bezier(0.25, 1, 0.5, 1),
 		background-color 0.15s,
-		opacity 0.15s ease !important;
+		opacity 0.15s ease;
 }
 
 :deep(.vue-flow__handle:after) {
 	content: '';
 	position: absolute;
-	width: 24px !important;
-	height: 24px !important;
-	top: 50% !important;
-	left: 50% !important;
-	transform: translate(-50%, -50%) !important;
-	border-radius: 50% !important;
-	background-color: transparent !important;
-	pointer-events: all !important;
+	width: 24px;
+	height: 24px;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	border-radius: 50%;
+	background-color: transparent;
+	pointer-events: all;
 }
 
-:deep(.vue-flow__handle:hover) {
-	opacity: 1 !important;
-	border-color: #ffffff !important;
-	box-shadow: 0 0 8px rgba(22, 93, 255, 0.6);
+:deep(.vue-flow__node) {
+	transition: transform 0.1s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-:deep(.vue-flow__handle-top:hover) {
-	transform: translate(-50%, -50%) translateY(1px) scale(1.25) !important;
-}
+:deep(.vue-flow__node:hover) {
+	.vue-flow__handle {
+		opacity: 1;
+		border-color: #ffffff;
+		box-shadow: 0 0 8px rgba(22, 93, 255, 0.6);
+	}
 
-:deep(.vue-flow__handle-bottom:hover) {
-	transform: translate(-50%, 50%) translateY(-1px) scale(1.25) !important;
-}
+	.vue-flow__handle-top {
+		transform: translate(-50%, -50%) translateY(1px) scale(1.25) !important;
+	}
 
-:deep(.vue-flow__handle-left:hover) {
-	transform: translate(-50%, -50%) translateX(1px) scale(1.25) !important;
-}
+	.vue-flow__handle-bottom {
+		transform: translate(-50%, 50%) translateY(-1px) scale(1.25) !important;
+	}
 
-:deep(.vue-flow__handle-right:hover) {
-	transform: translate(50%, -50%) translateX(-1px) scale(1.25) !important;
+	.vue-flow__handle-left {
+		transform: translate(-50%, -50%) translateX(1px) scale(1.25) !important;
+	}
+
+	.vue-flow__handle-right {
+		transform: translate(50%, -50%) translateX(-1px) scale(1.25) !important;
+	}
 }
 </style>

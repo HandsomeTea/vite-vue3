@@ -21,8 +21,26 @@
 			{{ props.data.label }}
 		</div>
 
-		<Handle type="target" :position="Position.Left" :id="EDGE_HANDLE_ID.TARGET_LEFT" />
-		<Handle type="source" :position="Position.Right" :id="EDGE_HANDLE_ID.SOURCE_RIGHT" />
+		<Handle
+			v-if="
+				!connectingStartNode.id ||
+				(connectingStartNode.id === props.id && connectingStartNode.position === 'target') ||
+				connectingStartNode.position === 'source'
+			"
+			type="target"
+			:position="Position.Left"
+			:id="EDGE_HANDLE_ID.TARGET_LEFT"
+		/>
+		<Handle
+			v-if="
+				!connectingStartNode.id ||
+				(connectingStartNode.id === props.id && connectingStartNode.position === 'source') ||
+				connectingStartNode.position === 'target'
+			"
+			type="source"
+			:position="Position.Right"
+			:id="EDGE_HANDLE_ID.SOURCE_RIGHT"
+		/>
 	</div>
 </template>
 
@@ -32,6 +50,7 @@ import { computed } from 'vue';
 import { generateNodeTheme, EDGE_HANDLE_ID } from './lib';
 
 const props = defineProps<{
+	id: string;
 	data: { type: string; label: string };
 	selected: boolean;
 	nodeConfigList: Record<
@@ -43,8 +62,11 @@ const props = defineProps<{
 			svg: string;
 		}
 	>;
+	connectingStartNode: {
+		position: '' | 'source' | 'target';
+		id: string;
+	};
 }>();
-
 const nodeConfig = computed(() => {
 	const nodeType = props.data.type || 'origin';
 

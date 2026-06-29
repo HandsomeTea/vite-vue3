@@ -167,7 +167,7 @@ const handleLabelClick = (e: MouseEvent) => {
 		data: props.data,
 		label: props.label,
 		selected: true
-	};
+	} as GraphEdge;
 
 	addSelectedEdges([currentEdge]);
 	if (onEdgeLabelClick) onEdgeLabelClick({ event: e, edge: currentEdge });
@@ -182,7 +182,7 @@ const handleLabelContextMenu = (e: MouseEvent) => {
 		data: props.data,
 		label: props.label,
 		selected: props.selected
-	};
+	} as GraphEdge;
 
 	if (onEdgeContextMenu) {
 		onEdgeContextMenu({ event: e, edge: currentEdge });
