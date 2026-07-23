@@ -1,7 +1,5 @@
 <template>
-	<!-- :nodes="nodes" :edges="edges" -->
-	<!-- :node-types="nodeTypes" :edge-types="edgeTypes" -->
-	<div class="flow-wrapper" @dblclick.prevent="toAddNode" @contextmenu.prevent="handleGlobalContextMenu">
+	<div class="flow-wrapper" @dblclick.prevent="toAddNode('view')" @contextmenu.prevent="handleGlobalContextMenu">
 		<vue-flow
 			class="flow-canvas"
 			@pane-click="
@@ -58,7 +56,7 @@
 				</ControlButton>
 
 				<template v-if="!props.showMode">
-					<ControlButton v-if="nodesDraggable" title="添加节点" @click="toAddNode">
+					<ControlButton v-if="nodesDraggable" title="添加节点" @click="toAddNode('view')">
 						<icon-plus class="max-w-[14px] max-h-[14px]" />
 					</ControlButton>
 
@@ -121,7 +119,7 @@
 			:style="{ left: contextMenu.x + 'px', top: contextMenu.y + 'px' }"
 			@click.stop
 		>
-			<div v-if="contextMenu.target.type === 'pane'" class="menu-item" @click="toAddNode">
+			<div v-if="contextMenu.target.type === 'pane'" class="menu-item" @click="toAddNode('contextmenu')">
 				<icon-plus class="mr-[6px]" /> 添加节点
 			</div>
 			<template v-else>
@@ -131,6 +129,9 @@
 				</div>
 			</template>
 		</div>
+
+		<span v-if="canBack" class="history-operate-btn left-[12px]" @click="goBack()" @dblclick.stop> 上一步 </span>
+		<span v-if="canNext" class="history-operate-btn right-[12px]" @click="goNext()" @dblclick.stop> 下一步 </span>
 	</div>
 </template>
 
@@ -154,7 +155,7 @@ import { Tips } from '@/ui-frame/index.ts';
 
 import BaseEdge from './baseEdge.vue';
 import BaseNode from './baseNode.vue';
-import { EDGE_HANDLE_ID } from './lib.ts';
+import { EDGE_HANDLE_ID, useFlowHistory } from './lib.ts';
 
 interface ChartProps {
 	showMode?: boolean;
@@ -167,6 +168,17 @@ interface ChartProps {
 			svg: string;
 		}
 	>;
+}
+
+interface CustomEdgeAttr {
+	sourceHandle: (typeof EDGE_HANDLE_ID)['SOURCE_RIGHT'];
+	targetHandle: (typeof EDGE_HANDLE_ID)['TARGET_LEFT'];
+	type: 'default';
+	source: string;
+	target: string;
+	animated?: boolean | undefined;
+	data: ChartEdgeData;
+	id: string;
 }
 
 const props = defineProps<ChartProps>();
@@ -183,6 +195,11 @@ const contextMenu = reactive({
 	x: 0,
 	y: 0,
 	target: { id: '', type: 'pane' as 'pane' | 'node' | 'edge' }
+});
+const addNodePostion = reactive<{ from: 'contextmenu' | 'view'; x: number; y: number }>({
+	from: 'view',
+	x: 0,
+	y: 0
 });
 const connectingStartNode = ref<{ position: '' | 'source' | 'target'; id: string }>({
 	position: '',
@@ -210,14 +227,26 @@ const {
 	removeNodes,
 	removeEdges
 } = useVueFlow();
+const { initHistory, goBack, goNext, addHistory, canBack, canNext } = useFlowHistory();
 const closeContextMenu = () => {
 	contextMenu.show = false;
 };
-const toAddNode = () => {
+const toAddNode = (from: 'contextmenu' | 'view') => {
 	if (props.showMode) {
 		return;
 	}
 	emit('to-add-node');
+
+	addNodePostion.from = from;
+	if (from === 'contextmenu') {
+		addNodePostion.x =
+			contextMenu.x - ((document.getElementsByClassName('view-aside')[0] as HTMLElement).offsetWidth || 0) - 30;
+		addNodePostion.y =
+			contextMenu.y - ((document.getElementsByClassName('app-header')[0] as HTMLElement).offsetHeight || 0) - 26;
+	} else {
+		addNodePostion.x = 80;
+		addNodePostion.y = 20;
+	}
 	closeContextMenu();
 };
 const toEdit = (from: 'contextmenu' | 'view') => {
@@ -319,36 +348,36 @@ const handleLayout = () => {
 			});
 		});
 		fitView({ padding: 0.2 });
+		nextTick(() => {
+			addHistory();
+		});
 	});
 };
 const _addNodes = (nodes: Array<{ id: string; data: ChartNodeData }>) => {
 	if (props.showMode) {
 		return;
 	}
+	const _nodes = nodes.map(s => ({
+		...s,
+		position: project({ x: addNodePostion.x, y: addNodePostion.y })
+	}));
 
-	addNodes(
-		nodes.map(s => ({
-			...s,
-			position: project({ x: 80, y: 20 })
-		}))
-	);
+	addNodes(_nodes);
 };
 
 const addEdge = (edge: { source: string; target: string; animated?: boolean; data: ChartEdgeData }) => {
 	if (props.showMode) {
 		return;
 	}
-	const id = `edge_${edge.source}_to_${edge.target}_${Date.now()}`;
+	const _edge: CustomEdgeAttr = {
+		id: `edge_${edge.source}_to_${edge.target}_${Date.now()}`,
+		...edge,
+		sourceHandle: EDGE_HANDLE_ID.SOURCE_RIGHT,
+		targetHandle: EDGE_HANDLE_ID.TARGET_LEFT,
+		type: 'default'
+	};
 
-	addEdges([
-		{
-			id,
-			...edge,
-			sourceHandle: EDGE_HANDLE_ID.SOURCE_RIGHT,
-			targetHandle: EDGE_HANDLE_ID.TARGET_LEFT,
-			type: 'default'
-		}
-	]);
+	addEdges([_edge]);
 };
 
 const _updateNodeData = (nodeId: string, data: Partial<ChartNodeData>) => {
@@ -530,6 +559,7 @@ provide('onEdgeContextMenu', undefined);
 
 onMounted(() => {
 	window.addEventListener('click', closeContextMenu);
+	initHistory();
 });
 onUnmounted(() => {
 	window.removeEventListener('click', closeContextMenu);
@@ -547,6 +577,25 @@ onUnmounted(() => {
 	.flow-canvas {
 		width: 100%;
 		height: 100%;
+	}
+
+	.history-operate-btn {
+		position: absolute;
+		bottom: 12px;
+		background: #fff;
+		border: 1px solid #e5e6eb;
+		border-radius: 12px;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+		padding: 0 12px;
+		font-size: 13px;
+		line-height: 26px;
+		cursor: pointer;
+		transition: box-shadow 0.3s ease;
+	}
+
+	.history-operate-btn:hover {
+		color: #165dff;
+		box-shadow: 0 0px 20px rgba(0, 0, 0, 0.35);
 	}
 
 	.custom-context-menu {

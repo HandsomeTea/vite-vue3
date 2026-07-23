@@ -1,3 +1,6 @@
+import { useVueFlow, type Edge } from '@vue-flow/core';
+import { ref } from 'vue';
+
 /**
  * 将 Hex 转换为 HSL
  */
@@ -82,7 +85,7 @@ export function generateNodeTheme(mainColorHex: string) {
 export const EDGE_HANDLE_ID = {
 	TARGET_LEFT: 't-l',
 	SOURCE_RIGHT: 's-r'
-};
+} as const;
 export interface ChartExpose<
 	ExposeNodeType extends string,
 	ExposeNodeData extends object & { label: string; type: ExposeNodeType },
@@ -92,4 +95,229 @@ export interface ChartExpose<
 	addEdge: (edge: { source: string; target: string; animated?: boolean; data: ExposeEdgeData }) => void;
 	updateNodeData: (nodeId: string, data: Partial<ExposeNodeData>) => void;
 	updateEdgeData: (edgeId: string, data: Partial<ExposeEdgeData>) => void;
+}
+interface FlowSnapshot {
+	nodes: Node[];
+	edges: Edge[];
+}
+
+const FLOW_HISTORY_KEY = 'vue-flow-history';
+const BACK_KEY = `${FLOW_HISTORY_KEY}_back`;
+const CURRENT_KEY = `${FLOW_HISTORY_KEY}_current`;
+const NEXT_KEY = `${FLOW_HISTORY_KEY}_next`;
+const MAX_STEPS = 20;
+const VALID_NODE_CHANGE_TYPES = ['position', 'add', 'remove', 'reset', 'dimensions'];
+const VALID_EDGE_CHANGE_TYPES = ['add', 'remove', 'reset'];
+
+export function useFlowHistory() {
+	const { nodes, edges, setNodes, setEdges, onNodesChange, onEdgesChange } = useVueFlow();
+
+	let isInternalAction = false;
+	const canBack = ref(false);
+	const canNext = ref(false);
+
+	const updateCanState = () => {
+		const backData = JSON.parse(localStorage.getItem(BACK_KEY) || '[]');
+		const nextData = JSON.parse(localStorage.getItem(NEXT_KEY) || '[]');
+
+		canBack.value = backData.length > 0;
+		canNext.value = nextData.length > 0;
+	};
+
+	const captureSnapshot = (): FlowSnapshot => ({
+		nodes: JSON.parse(JSON.stringify(nodes.value)),
+		edges: JSON.parse(JSON.stringify(edges.value))
+	});
+
+	const initHistory = () => {
+		const savedCurrent = localStorage.getItem(CURRENT_KEY);
+
+		if (savedCurrent) {
+			const snapshot = JSON.parse(savedCurrent) as FlowSnapshot;
+
+			isInternalAction = true;
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			setNodes(snapshot.nodes);
+			setEdges(snapshot.edges);
+			setTimeout(() => {
+				isInternalAction = false;
+			}, 50);
+		} else {
+			localStorage.setItem(CURRENT_KEY, JSON.stringify(captureSnapshot()));
+		}
+		updateCanState();
+	};
+
+	const addHistory = () => {
+		if (isInternalAction) {
+			return;
+		}
+
+		// 1. 获取变更前的 current 作为“过去”，压入 back
+		const savedCurrent = localStorage.getItem(CURRENT_KEY);
+
+		if (savedCurrent) {
+			const currentBack = JSON.parse(localStorage.getItem(BACK_KEY) || '[]') as FlowSnapshot[];
+
+			currentBack.push(JSON.parse(savedCurrent));
+			if (currentBack.length > MAX_STEPS) {
+				currentBack.shift();
+			}
+			localStorage.setItem(BACK_KEY, JSON.stringify(currentBack));
+		}
+
+		// 2. 将防抖完后的最新画布状态存为 current
+		const newSnapshot = captureSnapshot();
+
+		localStorage.setItem(CURRENT_KEY, JSON.stringify(newSnapshot));
+
+		// 3. 产生新操作，清空 next
+		localStorage.removeItem(NEXT_KEY);
+
+		updateCanState();
+	};
+
+	/**
+	 * 🌟 自定义防抖包装函数 (Debounce)
+	 * 延迟设置为 300ms（可以根据体验调整，如 200ms - 500ms）
+	 */
+	let timer: ReturnType<typeof setTimeout> | null = null;
+	const debouncedAddHistory = (delay = 300) => {
+		if (isInternalAction) {
+			return;
+		}
+
+		if (timer) {
+			clearTimeout(timer);
+		}
+		timer = setTimeout(() => {
+			addHistory();
+			timer = null;
+		}, delay);
+	};
+
+	// ... canBack, canNext, goBack, goNext, clearHistory 保持不变 ...
+
+	const goBack = () => {
+		// 如果还有未执行完的防抖任务，强制取消，避免回退后又把旧变动存进来
+		if (timer) {
+			clearTimeout(timer);
+		}
+
+		const backData = JSON.parse(localStorage.getItem(BACK_KEY) || '[]') as FlowSnapshot[];
+
+		if (backData.length === 0) {
+			return;
+		}
+
+		isInternalAction = true;
+
+		const savedCurrent = localStorage.getItem(CURRENT_KEY);
+
+		if (savedCurrent) {
+			const nextData = JSON.parse(localStorage.getItem(NEXT_KEY) || '[]') as FlowSnapshot[];
+
+			nextData.push(JSON.parse(savedCurrent));
+			localStorage.setItem(NEXT_KEY, JSON.stringify(nextData));
+		}
+
+		const targetState = backData.pop() as FlowSnapshot;
+
+		localStorage.setItem(BACK_KEY, JSON.stringify(backData));
+
+		localStorage.setItem(CURRENT_KEY, JSON.stringify(targetState));
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		// @ts-ignore
+		setNodes(targetState.nodes);
+		setEdges(targetState.edges);
+
+		updateCanState();
+
+		setTimeout(() => {
+			isInternalAction = false;
+		}, 50);
+	};
+
+	const goNext = () => {
+		if (timer) {
+			clearTimeout(timer);
+		}
+
+		const nextData = JSON.parse(localStorage.getItem(NEXT_KEY) || '[]') as FlowSnapshot[];
+
+		if (nextData.length === 0) {
+			return;
+		}
+
+		isInternalAction = true;
+
+		const savedCurrent = localStorage.getItem(CURRENT_KEY);
+
+		if (savedCurrent) {
+			const currentBack = JSON.parse(localStorage.getItem(BACK_KEY) || '[]') as FlowSnapshot[];
+
+			currentBack.push(JSON.parse(savedCurrent));
+			localStorage.setItem(BACK_KEY, JSON.stringify(currentBack));
+		}
+
+		const targetState = nextData.pop() as FlowSnapshot;
+
+		localStorage.setItem(NEXT_KEY, JSON.stringify(nextData));
+
+		localStorage.setItem(CURRENT_KEY, JSON.stringify(targetState));
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		// @ts-ignore
+		setNodes(targetState.nodes);
+		setEdges(targetState.edges);
+
+		updateCanState();
+
+		setTimeout(() => {
+			isInternalAction = false;
+		}, 50);
+	};
+
+	const clearHistory = () => {
+		localStorage.removeItem(BACK_KEY);
+		localStorage.removeItem(CURRENT_KEY);
+		localStorage.removeItem(NEXT_KEY);
+		updateCanState();
+	};
+
+	// 🌟 自动监听画布变化，并使用防抖
+	onNodesChange(changes => {
+		if (isInternalAction) {
+			return;
+		}
+
+		const hasValidChange = changes.some(change => VALID_NODE_CHANGE_TYPES.includes(change.type));
+
+		if (hasValidChange) {
+			// 触发防抖：如果在 300ms 内连续触发（布局改变），只保留最后一次
+			debouncedAddHistory(300);
+		}
+	});
+
+	onEdgesChange(changes => {
+		if (isInternalAction) {
+			return;
+		}
+
+		const hasValidChange = changes.some(change => VALID_EDGE_CHANGE_TYPES.includes(change.type));
+
+		if (hasValidChange) {
+			debouncedAddHistory(300);
+		}
+	});
+
+	return {
+		initHistory,
+		addHistory,
+		canBack,
+		canNext,
+		goBack,
+		goNext,
+		clearHistory
+	};
 }
