@@ -1,5 +1,5 @@
 import { useVueFlow, type Edge } from '@vue-flow/core';
-import { ref } from 'vue';
+import { nextTick, ref } from 'vue';
 
 /**
  * 将 Hex 转换为 HSL
@@ -106,11 +106,9 @@ const BACK_KEY = `${FLOW_HISTORY_KEY}_back`;
 const CURRENT_KEY = `${FLOW_HISTORY_KEY}_current`;
 const NEXT_KEY = `${FLOW_HISTORY_KEY}_next`;
 const MAX_STEPS = 20;
-const VALID_NODE_CHANGE_TYPES = ['position', 'add', 'remove', 'reset', 'dimensions'];
-const VALID_EDGE_CHANGE_TYPES = ['add', 'remove', 'reset'];
 
 export function useFlowHistory() {
-	const { nodes, edges, setNodes, setEdges, onNodesChange, onEdgesChange } = useVueFlow();
+	const { nodes, edges, setNodes, setEdges, fitView } = useVueFlow();
 
 	let isInternalAction = false;
 	const canBack = ref(false);
@@ -178,33 +176,7 @@ export function useFlowHistory() {
 		updateCanState();
 	};
 
-	/**
-	 * 🌟 自定义防抖包装函数 (Debounce)
-	 * 延迟设置为 300ms（可以根据体验调整，如 200ms - 500ms）
-	 */
-	let timer: ReturnType<typeof setTimeout> | null = null;
-	const debouncedAddHistory = (delay = 300) => {
-		if (isInternalAction) {
-			return;
-		}
-
-		if (timer) {
-			clearTimeout(timer);
-		}
-		timer = setTimeout(() => {
-			addHistory();
-			timer = null;
-		}, delay);
-	};
-
-	// ... canBack, canNext, goBack, goNext, clearHistory 保持不变 ...
-
 	const goBack = () => {
-		// 如果还有未执行完的防抖任务，强制取消，避免回退后又把旧变动存进来
-		if (timer) {
-			clearTimeout(timer);
-		}
-
 		const backData = JSON.parse(localStorage.getItem(BACK_KEY) || '[]') as FlowSnapshot[];
 
 		if (backData.length === 0) {
@@ -237,13 +209,12 @@ export function useFlowHistory() {
 		setTimeout(() => {
 			isInternalAction = false;
 		}, 50);
+		nextTick(() => {
+			fitView({ padding: 0.2 });
+		});
 	};
 
 	const goNext = () => {
-		if (timer) {
-			clearTimeout(timer);
-		}
-
 		const nextData = JSON.parse(localStorage.getItem(NEXT_KEY) || '[]') as FlowSnapshot[];
 
 		if (nextData.length === 0) {
@@ -276,6 +247,9 @@ export function useFlowHistory() {
 		setTimeout(() => {
 			isInternalAction = false;
 		}, 50);
+		nextTick(() => {
+			fitView({ padding: 0.2 });
+		});
 	};
 
 	const clearHistory = () => {
@@ -284,32 +258,6 @@ export function useFlowHistory() {
 		localStorage.removeItem(NEXT_KEY);
 		updateCanState();
 	};
-
-	// 🌟 自动监听画布变化，并使用防抖
-	onNodesChange(changes => {
-		if (isInternalAction) {
-			return;
-		}
-
-		const hasValidChange = changes.some(change => VALID_NODE_CHANGE_TYPES.includes(change.type));
-
-		if (hasValidChange) {
-			// 触发防抖：如果在 300ms 内连续触发（布局改变），只保留最后一次
-			debouncedAddHistory(300);
-		}
-	});
-
-	onEdgesChange(changes => {
-		if (isInternalAction) {
-			return;
-		}
-
-		const hasValidChange = changes.some(change => VALID_EDGE_CHANGE_TYPES.includes(change.type));
-
-		if (hasValidChange) {
-			debouncedAddHistory(300);
-		}
-	});
 
 	return {
 		initHistory,

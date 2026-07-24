@@ -10,6 +10,7 @@
 			"
 			@node-click="onNodeClick"
 			@edge-click="closeContextMenu()"
+			@node-drag-stop="nextTick(() => addHistory())"
 			@connect="handleConnect"
 			@connect-start="
 				e => {
@@ -304,7 +305,7 @@ const deleteSelectedEles = async (from: 'contextmenu' | 'view') => {
 	removeEdges(eleIds.filter(d => d.type === 'edge').map(d => d.id));
 	closeContextMenu();
 };
-const handleLayout = () => {
+const handleLayout = async () => {
 	if (getNodes.value.length === 0) return;
 
 	const graph = new dagre.graphlib.Graph();
@@ -339,7 +340,7 @@ const handleLayout = () => {
 	});
 
 	// 3. 节点坐标重置后，在下一个帧对齐连线句柄并撑满视口
-	nextTick(() => {
+	await nextTick(() => {
 		getEdges.value.forEach(edge => {
 			updateEdge(edge, {
 				...edge,
@@ -348,10 +349,8 @@ const handleLayout = () => {
 			});
 		});
 		fitView({ padding: 0.2 });
-		nextTick(() => {
-			addHistory();
-		});
 	});
+	await nextTick(() => addHistory());
 };
 const _addNodes = (nodes: Array<{ id: string; data: ChartNodeData }>) => {
 	if (props.showMode) {
@@ -363,6 +362,9 @@ const _addNodes = (nodes: Array<{ id: string; data: ChartNodeData }>) => {
 	}));
 
 	addNodes(_nodes);
+	setTimeout(() => {
+		nextTick(() => addHistory());
+	}, 200);
 };
 
 const addEdge = (edge: { source: string; target: string; animated?: boolean; data: ChartEdgeData }) => {
@@ -378,6 +380,9 @@ const addEdge = (edge: { source: string; target: string; animated?: boolean; dat
 	};
 
 	addEdges([_edge]);
+	setTimeout(() => {
+		nextTick(() => addHistory());
+	}, 200);
 };
 
 const _updateNodeData = (nodeId: string, data: Partial<ChartNodeData>) => {
@@ -385,12 +390,14 @@ const _updateNodeData = (nodeId: string, data: Partial<ChartNodeData>) => {
 		return;
 	}
 	updateNodeData(nodeId, data);
+	nextTick(() => addHistory());
 };
 const _updateEdgeData = (edgeId: string, data: Partial<ChartEdgeData>) => {
 	if (props.showMode) {
 		return;
 	}
 	updateEdgeData(edgeId, data);
+	nextTick(() => addHistory());
 };
 
 defineExpose({
@@ -546,6 +553,7 @@ const handleConnect = (connection: Connection) => {
 		type: 'default',
 		data: { label: '' }
 	});
+	nextTick(() => addHistory());
 
 	Tips.success('连线创建成功');
 };
@@ -559,7 +567,7 @@ provide('onEdgeContextMenu', undefined);
 
 onMounted(() => {
 	window.addEventListener('click', closeContextMenu);
-	initHistory();
+	setTimeout(() => initHistory(), 200);
 });
 onUnmounted(() => {
 	window.removeEventListener('click', closeContextMenu);
