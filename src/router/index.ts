@@ -14,24 +14,36 @@ const routes: Array<RouteRecordRaw> = [
 		children: [
 			{
 				path: '/index',
-				meta: { i18nNavigateName: '首页', page: 'index' },
+				meta: { title: '首页', page: 'index' },
 				component: () => import('../views/homeView.vue')
 			},
 			{
 				path: '/test',
-				meta: { i18nNavigateName: '测试', i18nNavigateGroupName: '测试组', page: 'test' },
-				component: () => import('../views/testView.vue'),
-				children: [
-					{
-						path: '/test/edit',
-						meta: { i18nNavigateName: '测试编辑', page: 'testEdit' },
-						component: () => import('../views/testEdit.vue')
-					}
-				]
+				meta: {
+					title: '测试',
+					group: '测试组',
+					page: 'test',
+					breadcrumb: [{ name: '测试组' }]
+				},
+				component: () => import('../views/testView.vue')
+			},
+			{
+				path: '/test/edit',
+				meta: {
+					title: '测试编辑',
+					page: 'testEdit',
+					breadcrumb: [{ name: '测试组' }, { name: '测试', path: '/test', page: 'test' }]
+				},
+				component: () => import('../views/testEdit.vue')
 			},
 			{
 				path: '/chart',
-				meta: { i18nNavigateName: 'vueflow', i18nNavigateGroupName: '图表', page: 'chart-vueflow' },
+				meta: {
+					title: 'vueflow',
+					group: '图表',
+					page: 'chart-vueflow',
+					breadcrumb: [{ name: '图表' }]
+				},
 				component: () => import('../views/chart/vueflow/pipelineView.vue')
 			}
 		]

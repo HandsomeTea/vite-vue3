@@ -57,7 +57,7 @@ const route = useRoute();
 watch(
 	() => route.path,
 	() => {
-		document.title = (route.meta.i18nNavigateName as string) || 'vite app';
+		document.title = (route.meta.title as string) || 'vite app';
 	}
 );
 </script>
